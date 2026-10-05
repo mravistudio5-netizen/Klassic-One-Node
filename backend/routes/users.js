@@ -336,6 +336,7 @@ router.patch(
     try {
       const allowed = [
         "name",
+        "email",
         "role",
         "mobile",
         "google_email",
@@ -355,6 +356,43 @@ router.patch(
         }
       }
 
+      // -----------------------------
+      // EMAIL
+      // -----------------------------
+
+      if (update.email !== undefined) {
+        update.email = String(update.email)
+          .trim()
+          .toLowerCase();
+
+        if (!update.email) {
+          return res.status(400).json({
+            success: false,
+            message: "Email is required",
+          });
+        }
+
+        const existingUser =
+          await User.findOne({
+            email: update.email,
+            _id: {
+              $ne: req.params.id,
+            },
+          });
+
+        if (existingUser) {
+          return res.status(409).json({
+            success: false,
+            message:
+              "Another user with this email already exists",
+          });
+        }
+      }
+
+      // -----------------------------
+      // ROLE
+      // -----------------------------
+
       if (
         update.role &&
         (
@@ -367,6 +405,10 @@ router.patch(
           message: "Invalid role",
         });
       }
+
+      // -----------------------------
+      // PASSWORD
+      // -----------------------------
 
       if (req.body.password) {
         const password = String(
@@ -388,11 +430,20 @@ router.patch(
           );
       }
 
+      // -----------------------------
+      // UPDATE USER
+      // -----------------------------
+
       const user =
         await User.findByIdAndUpdate(
           req.params.id,
-          { $set: update },
-          { new: true }
+          {
+            $set: update,
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
         ).select("-passwordHash");
 
       if (!user) {
@@ -420,238 +471,3 @@ router.patch(
     }
   }
 );
-
-// ======================================================
-// DELETE USER
-// ======================================================
-
-router.delete(
-  "/:id",
-  requireAuth,
-  requireRoles("owner", "admin"),
-  async (req, res) => {
-    try {
-      if (
-        String(req.params.id) ===
-        String(req.user._id)
-      ) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "You cannot delete your own account",
-        });
-      }
-
-      const user =
-        await User.findByIdAndDelete(
-          req.params.id
-        );
-
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: "User not found",
-        });
-      }
-
-      return res.json({
-        success: true,
-      });
-
-    } catch (error) {
-      console.error(
-        "Delete user error:",
-        error
-      );
-
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-);
-
-// ======================================================
-// REGISTER
-// ======================================================
-
-router.post(
-  "/register",
-  async (req, res) => {
-    try {
-      const email = String(
-        req.body.email || ""
-      )
-        .trim()
-        .toLowerCase();
-
-      const password = String(
-        req.body.password || ""
-      );
-
-      const name = String(
-        req.body.name || ""
-      ).trim();
-
-      const role = ROLE_OPTIONS.includes(
-        req.body.role
-      )
-        ? req.body.role
-        : "manager";
-
-      if (!email || !password) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Email and password are required",
-        });
-      }
-
-      if (password.length < 6) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Password must be at least 6 characters",
-        });
-      }
-
-      if (await User.findOne({ email })) {
-        return res.status(409).json({
-          success: false,
-          message: "User already exists",
-        });
-      }
-
-      const passwordHash =
-        await bcrypt.hash(
-          password,
-          10
-        );
-
-      const user = await User.create({
-        email,
-        passwordHash,
-        name,
-        role,
-        active: true,
-      });
-
-      return res.status(201).json({
-        success: true,
-        user: publicUser(user),
-      });
-
-    } catch (error) {
-      console.error(
-        "Register error:",
-        error
-      );
-
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-);
-
-// ======================================================
-// LOGIN
-// ======================================================
-
-router.post(
-  "/login",
-  async (req, res) => {
-    try {
-      const email = String(
-        req.body.email || ""
-      )
-        .trim()
-        .toLowerCase();
-
-      const password = String(
-        req.body.password || ""
-      );
-
-      const user =
-        await User.findOne({ email });
-
-      if (
-        !user ||
-        user.active === false
-      ) {
-        return res.status(401).json({
-          success: false,
-          message:
-            "Invalid email or password",
-        });
-      }
-
-      const ok =
-        await bcrypt.compare(
-          password,
-          user.passwordHash
-        );
-
-      if (!ok) {
-        return res.status(401).json({
-          success: false,
-          message:
-            "Invalid email or password",
-        });
-      }
-
-      const token = jwt.sign(
-        {
-          id: user._id.toString(),
-          userId: user._id.toString(),
-          role: user.role,
-          email: user.email,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "7d",
-        }
-      );
-
-      return res.json({
-        success: true,
-        token,
-        user: publicUser(user),
-      });
-
-    } catch (error) {
-      console.error(
-        "Login error:",
-        error
-      );
-
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-);
-
-// ======================================================
-// CURRENT USER
-// ======================================================
-
-router.get(
-  "/me",
-  requireAuth,
-  async (req, res) => {
-    return res.json({
-      success: true,
-      user: publicUser(req.user),
-    });
-  }
-);
-
-// ======================================================
-// EXPORT
-// ======================================================
-
-module.exports = router;
