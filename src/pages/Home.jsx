@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link } from "react-router-dom";
 import { useLang } from "@/lib/i18n";
 import { apiFetch } from "@/api";
 
@@ -260,8 +260,8 @@ function QuickLink({
   label,
 }) {
   return (
-    <a
-      href={to}
+    <Link
+      to={to}
       className="flex flex-col items-center gap-1.5 bg-white rounded-2xl p-3 border border-slate-100 shadow-sm hover:border-slate-300 transition-colors"
     >
 
@@ -273,6 +273,6 @@ function QuickLink({
         {label}
       </span>
 
-    </a>
+    </Link>
   );
 }
