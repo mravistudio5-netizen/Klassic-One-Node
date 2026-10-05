@@ -27,6 +27,32 @@ const ACTION_LABELS = {
   export: "EXPORT",
 };
 
+const REPORT_PERMISSIONS = [
+  {
+    key: "task_report",
+    label: "Task Report",
+  },
+  {
+    key: "not_done",
+    label: "Not Done",
+  },
+  {
+    key: "tailor_report",
+    label: "Tailor Report",
+  },
+  {
+    key: "checklist_report",
+    label: "Checklist Report",
+  },
+];
+
+const DEFAULT_REPORT_PERMISSIONS = {
+  task_report: false,
+  not_done: false,
+  tailor_report: false,
+  checklist_report: false,
+};
+
 export default function AdminRoles() {
   const [perms, setPerms] = useState({});
   const [selected, setSelected] = useState("manager");
@@ -48,6 +74,7 @@ export default function AdminRoles() {
       setPerms(map);
     } catch (error) {
       console.error("Failed to load permissions:", error);
+
       toast.error(
         "Failed to load permissions: " +
           (error.message || "Unknown error")
@@ -74,7 +101,21 @@ export default function AdminRoles() {
     return defaultMatrixForRole(role);
   };
 
-  const save = async (role, matrix, crossDepartment) => {
+  const reportPermissionsFor = (role) => {
+    const saved = perms[role]?.report_permissions;
+
+    return {
+      ...DEFAULT_REPORT_PERMISSIONS,
+      ...(saved || {}),
+    };
+  };
+
+  const save = async (
+    role,
+    matrix,
+    crossDepartment,
+    reportPermissions
+  ) => {
     setBusy(role);
 
     const modules = modulesFromMatrix(matrix) || [];
@@ -87,6 +128,9 @@ export default function AdminRoles() {
           body: JSON.stringify({
             matrix,
             modules,
+            report_permissions:
+              reportPermissions ||
+              reportPermissionsFor(role),
             can_assign_cross_department:
               crossDepartment ??
               !!perms[role]?.can_assign_cross_department,
@@ -116,7 +160,11 @@ export default function AdminRoles() {
     }
   };
 
-  const toggle = async (role, modKey, action) => {
+  const toggle = async (
+    role,
+    modKey,
+    action
+  ) => {
     const matrix = JSON.parse(
       JSON.stringify(matrixFor(role))
     );
@@ -128,7 +176,32 @@ export default function AdminRoles() {
     matrix[modKey][action] =
       !matrix[modKey][action];
 
-    await save(role, matrix);
+    await save(
+      role,
+      matrix,
+      undefined,
+      reportPermissionsFor(role)
+    );
+  };
+
+  const toggleReportPermission = async (
+    role,
+    reportKey
+  ) => {
+    const matrix = matrixFor(role);
+
+    const reportPermissions =
+      reportPermissionsFor(role);
+
+    reportPermissions[reportKey] =
+      !reportPermissions[reportKey];
+
+    await save(
+      role,
+      matrix,
+      undefined,
+      reportPermissions
+    );
   };
 
   const toggleCross = async (role) => {
@@ -150,6 +223,8 @@ export default function AdminRoles() {
           body: JSON.stringify({
             matrix,
             modules,
+            report_permissions:
+              reportPermissionsFor(role),
             can_assign_cross_department: next,
           }),
         }
@@ -190,6 +265,10 @@ export default function AdminRoles() {
     ? matrixFor(selected)
     : null;
 
+  const reportPermissions = selected
+    ? reportPermissionsFor(selected)
+    : DEFAULT_REPORT_PERMISSIONS;
+
   return (
     <div className="space-y-3">
       <div className="flex gap-2 overflow-x-auto no-scrollbar">
@@ -215,7 +294,9 @@ export default function AdminRoles() {
       ) : (
         <div
           className="rounded-3xl overflow-hidden"
-          style={{ backgroundColor: "#0B4C33" }}
+          style={{
+            backgroundColor: "#0B4C33",
+          }}
         >
           <div className="flex items-center justify-between px-5 pt-5">
             <h3 className="text-lg font-bold text-white capitalize flex items-center gap-2">
@@ -243,7 +324,8 @@ export default function AdminRoles() {
 
           <div className="px-3 pb-3 space-y-2.5">
             {MODULES.map((mod) => {
-              const row = matrix[mod.key] || {};
+              const row =
+                matrix[mod.key] || {};
 
               return (
                 <div
@@ -271,7 +353,11 @@ export default function AdminRoles() {
                               action
                             )
                           }
-                          disabled={busy === selected}
+                          disabled={
+                            busy === selected ||
+                            busy ===
+                              selected + "cross"
+                          }
                           className="text-[11px] font-semibold tracking-wide px-3 py-1.5 rounded-lg transition-colors text-white"
                           style={
                             on
@@ -294,6 +380,73 @@ export default function AdminRoles() {
                       );
                     })}
                   </div>
+
+                  {mod.key === "reports" && (
+                    <div className="mt-4 pt-3 border-t border-white/10">
+                      <p className="text-[11px] font-semibold tracking-[0.15em] text-white/70 mb-2.5">
+                        REPORT ACCESS
+                      </p>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {REPORT_PERMISSIONS.map(
+                          (report) => {
+                            const on =
+                              !!reportPermissions[
+                                report.key
+                              ];
+
+                            return (
+                              <button
+                                key={report.key}
+                                type="button"
+                                disabled={
+                                  busy === selected ||
+                                  !row.read
+                                }
+                                onClick={() =>
+                                  toggleReportPermission(
+                                    selected,
+                                    report.key
+                                  )
+                                }
+                                className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left text-[11px] font-semibold text-white transition-colors disabled:opacity-40"
+                                style={
+                                  on
+                                    ? {
+                                        backgroundColor:
+                                          "#2C7A63",
+                                        border:
+                                          "1px solid #FFFFFF",
+                                      }
+                                    : {
+                                        backgroundColor:
+                                          "#0E4D38",
+                                        border:
+                                          "1px solid transparent",
+                                      }
+                                }
+                              >
+                                <span>
+                                  {report.label}
+                                </span>
+
+                                <span className="text-[10px]">
+                                  {on ? "ON" : "OFF"}
+                                </span>
+                              </button>
+                            );
+                          }
+                        )}
+                      </div>
+
+                      {!row.read && (
+                        <p className="text-[10px] text-white/50 mt-2">
+                          Enable REPORTS → READ to give
+                          report access.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}

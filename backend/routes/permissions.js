@@ -13,6 +13,13 @@ const ROLES = [
   "tailoring_operator",
 ];
 
+const DEFAULT_REPORT_PERMISSIONS = {
+  task_report: false,
+  not_done: false,
+  tailor_report: false,
+  checklist_report: false,
+};
+
 // GET all role permissions
 router.get("/roles", requireAuth, async (req, res) => {
   try {
@@ -44,7 +51,9 @@ router.get("/roles/:role", requireAuth, async (req, res) => {
       });
     }
 
-    const item = await RolePermission.findOne({ role }).lean();
+    const item = await RolePermission.findOne({
+      role,
+    }).lean();
 
     res.json({
       success: true,
@@ -59,7 +68,6 @@ router.get("/roles/:role", requireAuth, async (req, res) => {
 });
 
 // GET permission directly by role
-// Frontend uses /api/permissions/owner
 router.get("/:role", requireAuth, async (req, res) => {
   try {
     const { role } = req.params;
@@ -71,7 +79,9 @@ router.get("/:role", requireAuth, async (req, res) => {
       });
     }
 
-    const item = await RolePermission.findOne({ role }).lean();
+    const item = await RolePermission.findOne({
+      role,
+    }).lean();
 
     res.json({
       success: true,
@@ -101,30 +111,51 @@ router.put(
         });
       }
 
+      const existing =
+        await RolePermission.findOne({
+          role,
+        }).lean();
+
+      const reportPermissions = {
+        ...DEFAULT_REPORT_PERMISSIONS,
+        ...(existing?.report_permissions || {}),
+        ...(req.body.report_permissions || {}),
+      };
+
       const update = {
         matrix: req.body.matrix || {},
+
         modules: Array.isArray(req.body.modules)
           ? req.body.modules
           : [],
+
+        report_permissions: reportPermissions,
+
         can_assign_cross_department:
           !!req.body.can_assign_cross_department,
       };
 
-      const item = await RolePermission.findOneAndUpdate(
-        { role },
-        { $set: update },
-        {
-          new: true,
-          upsert: true,
-          setDefaultsOnInsert: true,
-        }
-      ).lean();
+      const item =
+        await RolePermission.findOneAndUpdate(
+          { role },
+          { $set: update },
+          {
+            new: true,
+            upsert: true,
+            setDefaultsOnInsert: true,
+          }
+        ).lean();
 
       res.json({
         success: true,
         item,
       });
     } catch (error) {
+      console.error(
+        "Permission update failed:",
+        error
+      );
+
       res.status(500).json({
         success: false,
         message: error.message,

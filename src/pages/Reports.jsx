@@ -14,6 +14,13 @@ export default function Reports() {
   const [me, setMe] = useState(null);
   const [users, setUsers] = useState([]);
 
+  const [reportPermissions, setReportPermissions] = useState({
+    task_report: false,
+    not_done: false,
+    tailor_report: false,
+    checklist_report: false,
+  });
+
   useEffect(() => {
     (async () => {
       try {
@@ -23,10 +30,37 @@ export default function Reports() {
             apiFetch("/api/users?limit=100"),
           ]);
 
-        const currentUser =
-          meResponse.user;
+        const currentUser = meResponse.user;
 
         setMe(currentUser);
+
+        // Load individual report permissions
+        try {
+          const permissionResponse = await apiFetch(
+            `/api/permissions/${currentUser.role}`
+          );
+
+          setReportPermissions(
+            permissionResponse?.item?.report_permissions || {
+              task_report: false,
+              not_done: false,
+              tailor_report: false,
+              checklist_report: false,
+            }
+          );
+        } catch (permissionError) {
+          console.error(
+            "Failed to load report permissions:",
+            permissionError
+          );
+
+          setReportPermissions({
+            task_report: false,
+            not_done: false,
+            tailor_report: false,
+            checklist_report: false,
+          });
+        }
 
         setUsers(
           (userResponse.users || []).filter(
@@ -60,12 +94,52 @@ export default function Reports() {
       me.role
     );
 
-  const tabs = [
-    ["tasks", t("taskReport")],
-    ["notdone", "Not Done"],
-    ["tailor", t("tailorReport")],
-    ["checklists", t("checklistReport")],
-  ];
+  const tabs = [];
+
+  // Individual report permissions
+  if (reportPermissions.task_report) {
+    tabs.push([
+      "tasks",
+      t("taskReport"),
+    ]);
+  }
+
+  if (reportPermissions.not_done) {
+    tabs.push([
+      "notdone",
+      "Not Done",
+    ]);
+  }
+
+  if (reportPermissions.tailor_report) {
+    tabs.push([
+      "tailor",
+      t("tailorReport"),
+    ]);
+  }
+
+  if (reportPermissions.checklist_report) {
+    tabs.push([
+      "checklists",
+      t("checklistReport"),
+    ]);
+  }
+
+  if (isReviewer) {
+    tabs.push([
+      "scorecard",
+      "Scorecard",
+    ]);
+  }
+
+  if (can("reports", "export")) {
+    tabs.push([
+      "sheet",
+      "Sheet Export",
+    ]);
+  }
+
+  if (isAdmin) {
 
   if (isReviewer) {
     tabs.push([
