@@ -27,12 +27,28 @@ const ROLE_OPTIONS = [
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtpout.secureserver.net",
   port: Number(process.env.SMTP_PORT || 465),
-  secure: true,
+  secure: Number(process.env.SMTP_PORT || 465) === 465,
+
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
+
+transporter.verify()
+  .then(() => {
+    console.log("Titan SMTP connection verified successfully");
+  })
+  .catch((error) => {
+    console.error(
+      "Titan SMTP verification failed:",
+      error.message
+    );
+  });
 
 // ======================================================
 // PUBLIC USER
@@ -229,6 +245,12 @@ router.post(
       // SEND TITAN EMAIL
       // --------------------------------------------------
 
+      console.log("Attempting Titan SMTP invitation email...", {
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  user: process.env.SMTP_USER,
+  recipient: email,
+});
       try {
         await transporter.sendMail({
           from: `"Klassic One" <${process.env.SMTP_USER}>`,
