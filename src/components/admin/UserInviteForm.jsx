@@ -130,9 +130,9 @@ export default function UserInviteForm({ onInvited }) {
       // Save the permission matrix for this role.
       await saveMatrix();
 
-      // Create the user in MongoDB.
-      // Backend creates a temporary password if one isn't supplied.
-      const res = await apiFetch("/api/users", {
+      // Create the user and send invitation email.
+      // Backend creates a temporary password and sends it via Titan SMTP.
+      const res = await apiFetch("/api/users/invite", {
         method: "POST",
         body: JSON.stringify({
           email: cleanEmail,
@@ -142,7 +142,7 @@ export default function UserInviteForm({ onInvited }) {
       });
 
       toast.success(
-        `User created: ${cleanEmail}`
+        `Invitation sent: ${cleanEmail}`
       );
 
       if (res?.temporaryPassword) {
@@ -153,7 +153,6 @@ export default function UserInviteForm({ onInvited }) {
           }
         );
 
-        // Also show it in console for development.
         console.log(
           "Temporary password:",
           res.temporaryPassword
@@ -167,7 +166,7 @@ export default function UserInviteForm({ onInvited }) {
       onInvited?.();
     } catch (error) {
       console.error(
-        "Create user failed:",
+        "Send invitation failed:",
         error
       );
 
@@ -269,7 +268,7 @@ export default function UserInviteForm({ onInvited }) {
         {inviting ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            Creating...
+            Sending...
           </>
         ) : (
           <>
