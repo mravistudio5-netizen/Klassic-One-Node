@@ -4,7 +4,13 @@ import { apiFetch } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Loader2,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import GoogleIcon from "@/components/GoogleIcon";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
@@ -72,12 +78,12 @@ export default function Login() {
         {/* HEADER */}
         <div className="text-center mb-9">
           <div className="flex justify-center mb-5">
-  <img
-  src="/klassic-logo.png"
-  alt="Klassic One"
-  className="h-14 w-auto object-contain"
-/>
-</div>
+            <img
+              src="/klassic-logo.png"
+              alt="Klassic One"
+              className="h-14 w-auto object-contain"
+            />
+          </div>
 
           <h1 className="text-3xl font-bold tracking-tight text-slate-950">
             Welcome back
@@ -87,9 +93,10 @@ export default function Login() {
             Log in to your account
           </p>
         </div>
+
         <p className="mt-3 text-xs text-slate-400">
-  Developed by Ravion
-</p>
+          Developed by Ravion
+        </p>
 
         {/* CARD */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
@@ -171,35 +178,44 @@ export default function Login() {
               </div>
 
               <div className="relative">
-  <Lock
-    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-    aria-hidden="true"
-  />
 
-  <Input
-    id="password"
-    type={showPassword ? "text" : "password"}
-    autoComplete="current-password"
-    placeholder="••••••••"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    className="pl-10 pr-12 h-12"
-    required
-  />
+                <Lock
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+                  aria-hidden="true"
+                />
 
-  <button
-    type="button"
-    onClick={() => setShowPassword((prev) => !prev)}
-    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
-    aria-label={showPassword ? "Hide password" : "Show password"}
-  >
-    {showPassword ? (
-      <EyeOff className="w-4 h-4" />
-    ) : (
-      <Eye className="w-4 h-4" />
-    )}
-  </button>
-</div>
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 pr-12 h-12"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword((prev) => !prev)
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+
+              </div>
+            </div>
 
             {/* LOGIN BUTTON */}
             <Button
@@ -222,7 +238,7 @@ export default function Login() {
 
         {/* FOOTER */}
         <div className="text-center mt-7 text-sm text-slate-500">
-          Need access?{" "}
+          Need access{" "}
           <Link
             to="/register"
             className="text-slate-900 font-medium hover:underline"
