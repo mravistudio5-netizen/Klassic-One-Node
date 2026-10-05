@@ -139,7 +139,6 @@ export default function Reports() {
     ]);
   }
 
-  if (isAdmin) {
 
   if (isReviewer) {
     tabs.push([
