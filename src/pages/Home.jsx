@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext, Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { useLang } from "@/lib/i18n";
 import { apiFetch } from "@/api";
 
@@ -9,15 +9,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   Scissors,
-  FileSpreadsheet,
-  TrendingUp,
 } from "lucide-react";
 
 export default function Home() {
-  const { user, activeStoreId, modules } = useOutletContext();
+  const { user, activeStoreId } = useOutletContext();
   const { t } = useLang();
-
-  const can = (m) => !modules || modules.includes(m);
 
   const role =
     user?.role === "admin"
@@ -172,57 +168,6 @@ export default function Home() {
         </div>
       )}
 
-      <div className="pt-2">
-
-        <h3 className="text-sm font-semibold text-slate-700 mb-2">
-          Quick Actions
-        </h3>
-
-        <div className="grid grid-cols-3 gap-3">
-
-          {can("myTasks") && (
-            <QuickLink
-              to="/my-tasks"
-              icon={CheckSquare}
-              label={t("myTasks")}
-            />
-          )}
-
-          {can("tasks") && (
-            <QuickLink
-              to="/tasks"
-              icon={CheckSquare}
-              label={t("tasks")}
-            />
-          )}
-
-          {can("reports") && (
-            <QuickLink
-              to="/reports"
-              icon={TrendingUp}
-              label={t("reports")}
-            />
-          )}
-
-          {can("sheets") && (
-            <QuickLink
-              to="/sheets"
-              icon={FileSpreadsheet}
-              label={t("sheets")}
-            />
-          )}
-
-          {can("tailor") && (
-            <QuickLink
-              to="/tailor"
-              icon={Scissors}
-              label={t("tailor")}
-            />
-          )}
-
-        </div>
-      </div>
-
     </div>
   );
 }
@@ -251,28 +196,5 @@ function StatCard({
       </p>
 
     </div>
-  );
-}
-
-function QuickLink({
-  to,
-  icon: Icon,
-  label,
-}) {
-  return (
-    <Link
-      to={to}
-      className="flex flex-col items-center gap-1.5 bg-white rounded-2xl p-3 border border-slate-100 shadow-sm hover:border-slate-300 transition-colors"
-    >
-
-      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
-        <Icon className="w-5 h-5" />
-      </div>
-
-      <span className="text-[11px] font-medium text-slate-600 text-center leading-tight">
-        {label}
-      </span>
-
-    </Link>
   );
 }
