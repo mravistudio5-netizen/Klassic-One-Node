@@ -11,7 +11,6 @@ import {
   Scissors,
   FileSpreadsheet,
   TrendingUp,
-  ListChecks,
 } from "lucide-react";
 
 export default function Home() {
@@ -218,14 +217,6 @@ export default function Home() {
               to="/tailor"
               icon={Scissors}
               label={t("tailor")}
-            />
-          )}
-
-          {["owner", "mis", "manager"].includes(role) && (
-            <QuickLink
-              to="/task-admin"
-              icon={ListChecks}
-              label="Task Admin"
             />
           )}
 
