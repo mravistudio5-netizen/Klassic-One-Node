@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, Loader2 } from "lucide-react";
+import klassicLogo from "@/assets/klassic-logo.png";
 import GoogleIcon from "@/components/GoogleIcon";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
@@ -72,10 +73,10 @@ export default function Login() {
         <div className="text-center mb-9">
           <div className="flex justify-center mb-5">
   <img
-    src="/src/assets/klassic-logo.png"
-    alt="Klassic One"
-    className="h-14 w-auto object-contain"
-  />
+  src={klassicLogo}
+  alt="Klassic One"
+  className="h-14 w-auto object-contain"
+/>
 </div>
 
           <h1 className="text-3xl font-bold tracking-tight text-slate-950">
