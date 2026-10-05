@@ -1,12 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 
 const User = require("../models/User");
 const RolePermission = require("../models/RolePermission");
-const Invitation = require("../models/Invitation");
+
 const { requireAuth, requireRoles } = require("../middleware/auth");
 
 const router = express.Router();
@@ -19,36 +17,6 @@ const ROLE_OPTIONS = [
   "tailoring_manager",
   "tailoring_operator",
 ];
-
-// ======================================================
-// TITAN SMTP
-// ======================================================
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtpout.secureserver.net",
-  port: Number(process.env.SMTP_PORT || 465),
-  secure: Number(process.env.SMTP_PORT || 465) === 465,
-
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
-});
-
-transporter.verify()
-  .then(() => {
-    console.log("Titan SMTP connection verified successfully");
-  })
-  .catch((error) => {
-    console.error(
-      "Titan SMTP verification failed:",
-      error.message
-    );
-  });
 
 // ======================================================
 // PUBLIC USER
@@ -93,6 +61,8 @@ router.get(
         items: items.map(publicUser),
       });
     } catch (error) {
+      console.error("Get users error:", error);
+
       res.status(500).json({
         success: false,
         message: error.message,
@@ -102,7 +72,9 @@ router.get(
 );
 
 // ======================================================
-// INVITE USER + TITAN EMAIL
+// CREATE USER
+// USERNAME + PASSWORD
+// NO EMAIL / SMTP
 // ======================================================
 
 router.post(
@@ -117,7 +89,13 @@ router.post(
 
       const name = String(req.body.name || "").trim();
 
-      const role = String(req.body.role || "manager");
+      const role = String(
+        req.body.role || "manager"
+      );
+
+      const password = String(
+        req.body.password || ""
+      );
 
       const matrix = req.body.matrix || {};
 
@@ -128,7 +106,22 @@ router.post(
       if (!email) {
         return res.status(400).json({
           success: false,
-          message: "Email is required",
+          message: "Username / email is required",
+        });
+      }
+
+      if (!password) {
+        return res.status(400).json({
+          success: false,
+          message: "Password is required",
+        });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Password must be at least 6 characters",
         });
       }
 
@@ -151,22 +144,17 @@ router.post(
       if (exists) {
         return res.status(409).json({
           success: false,
-          message: "A user with this email already exists",
+          message:
+            "A user with this username/email already exists",
         });
       }
 
       // --------------------------------------------------
-      // TEMPORARY PASSWORD
+      // HASH PASSWORD
       // --------------------------------------------------
 
-      const temporaryPassword =
-        crypto
-          .randomBytes(6)
-          .toString("base64url")
-          .slice(0, 10) + "!1";
-
       const passwordHash = await bcrypt.hash(
-        temporaryPassword,
+        password,
         10
       );
 
@@ -209,307 +197,18 @@ router.post(
       );
 
       // --------------------------------------------------
-      // CREATE INVITATION TOKEN
-      // --------------------------------------------------
-
-      const token = crypto.randomBytes(32).toString("hex");
-
-      const tokenHash = crypto
-        .createHash("sha256")
-        .update(token)
-        .digest("hex");
-
-      const invitation = await Invitation.create({
-        email,
-        role,
-        tokenHash,
-        expiresAt: new Date(
-          Date.now() +
-            7 * 24 * 60 * 60 * 1000
-        ),
-        invitedBy: req.user._id,
-        used: false,
-      });
-
-      // --------------------------------------------------
-      // LOGIN URL
-      // --------------------------------------------------
-
-      const frontendUrl =
-        process.env.FRONTEND_URL ||
-        "https://one.klassicnx.com";
-
-      const loginUrl = `${frontendUrl}/login`;
-
-      // --------------------------------------------------
-      // SEND TITAN EMAIL
-      // --------------------------------------------------
-
-      console.log("Attempting Titan SMTP invitation email...", {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  user: process.env.SMTP_USER,
-  recipient: email,
-});
-      try {
-        await transporter.sendMail({
-          from: `"Klassic One" <${process.env.SMTP_USER}>`,
-          to: email,
-
-          subject: "You're invited to Klassic One",
-
-          // ----------------------------------------------
-          // PLAIN TEXT EMAIL
-          // ----------------------------------------------
-
-          text: `
-Hello ${name || "there"},
-
-You have been invited to join Klassic One.
-
-Role: ${role}
-
-Login Email:
-${email}
-
-Temporary Password:
-${temporaryPassword}
-
-Login here:
-${loginUrl}
-
-Please change your temporary password after logging in.
-
-This invitation was sent from Klassic One.
-          `.trim(),
-
-          // ----------------------------------------------
-          // HTML EMAIL
-          // ----------------------------------------------
-
-          html: `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Klassic One Invitation</title>
-</head>
-
-<body
-  style="
-    margin:0;
-    padding:0;
-    background:#f5f6f8;
-    font-family:Arial,Helvetica,sans-serif;
-    color:#172033;
-  "
->
-
-  <div
-    style="
-      max-width:600px;
-      margin:40px auto;
-      background:#ffffff;
-      border:1px solid #e5e7eb;
-      border-radius:14px;
-      overflow:hidden;
-    "
-  >
-
-    <!-- HEADER -->
-
-    <div
-      style="
-        background:#111827;
-        padding:26px 30px;
-      "
-    >
-      <h1
-        style="
-          margin:0;
-          color:#ffffff;
-          font-size:24px;
-        "
-      >
-        Klassic One
-      </h1>
-
-      <p
-        style="
-          margin:6px 0 0;
-          color:#cbd5e1;
-          font-size:13px;
-        "
-      >
-        Klassic NX Fashions
-      </p>
-    </div>
-
-    <!-- BODY -->
-
-    <div
-      style="
-        padding:30px;
-      "
-    >
-
-      <h2
-        style="
-          margin:0 0 20px;
-          font-size:22px;
-        "
-      >
-        You're invited to Klassic One
-      </h2>
-
-      <p>
-        Hello ${name || "there"},
-      </p>
-
-      <p>
-        You have been invited to join the
-        Klassic One management system.
-      </p>
-
-      <!-- ACCOUNT DETAILS -->
-
-      <div
-        style="
-          background:#f3f4f6;
-          border-radius:10px;
-          padding:18px;
-          margin:24px 0;
-        "
-      >
-
-        <p
-          style="
-            margin:0 0 10px;
-          "
-        >
-          <strong>Role:</strong>
-          ${role}
-        </p>
-
-        <p
-          style="
-            margin:0 0 10px;
-          "
-        >
-          <strong>Login Email:</strong>
-          ${email}
-        </p>
-
-        <p
-          style="
-            margin:0;
-          "
-        >
-          <strong>Temporary Password:</strong>
-          ${temporaryPassword}
-        </p>
-
-      </div>
-
-      <!-- LOGIN BUTTON -->
-
-      <div
-        style="
-          margin:28px 0;
-        "
-      >
-
-        <a
-          href="${loginUrl}"
-          style="
-            display:inline-block;
-            background:#111827;
-            color:#ffffff;
-            padding:14px 24px;
-            border-radius:8px;
-            text-decoration:none;
-            font-weight:bold;
-          "
-        >
-          Join Klassic One
-        </a>
-
-      </div>
-
-      <p
-        style="
-          margin-top:28px;
-          font-size:13px;
-          line-height:1.6;
-          color:#6b7280;
-        "
-      >
-        Please change your temporary password
-        after signing in.
-      </p>
-
-      <p
-        style="
-          margin-top:24px;
-          font-size:12px;
-          color:#9ca3af;
-        "
-      >
-        This is an automated email from
-        Klassic One.
-      </p>
-
-    </div>
-
-  </div>
-
-</body>
-</html>
-          `,
-        });
-      } catch (mailError) {
-        console.error(
-          "Invitation email failed:",
-          mailError.message
-        );
-
-        // ----------------------------------------------
-        // ROLLBACK USER + INVITATION
-        // ----------------------------------------------
-
-        await Invitation.findByIdAndDelete(
-          invitation._id
-        ).catch(() => {});
-
-        await User.findByIdAndDelete(
-          user._id
-        ).catch(() => {});
-
-        return res.status(500).json({
-          success: false,
-          message:
-            "Invitation email could not be sent.",
-          emailError: mailError.message,
-        });
-      }
-
-      // --------------------------------------------------
       // SUCCESS
       // --------------------------------------------------
 
       return res.status(201).json({
         success: true,
         item: publicUser(user),
-        temporaryPassword,
-        inviteToken: token,
-        message:
-          "User invited and email sent successfully",
+        message: "User created successfully",
       });
 
     } catch (error) {
       console.error(
-        "Invite user error:",
+        "Create user error:",
         error
       );
 
@@ -556,6 +255,14 @@ router.post(
         });
       }
 
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Password must be at least 6 characters",
+        });
+      }
+
       if (
         !ROLE_OPTIONS.includes(role) ||
         role === "owner"
@@ -573,10 +280,11 @@ router.post(
         });
       }
 
-      const passwordHash = await bcrypt.hash(
-        password,
-        10
-      );
+      const passwordHash =
+        await bcrypt.hash(
+          password,
+          10
+        );
 
       const user = await User.create({
         email,
@@ -603,6 +311,11 @@ router.post(
       });
 
     } catch (error) {
+      console.error(
+        "Create user error:",
+        error
+      );
+
       return res.status(500).json({
         success: false,
         message: error.message,
@@ -656,9 +369,21 @@ router.patch(
       }
 
       if (req.body.password) {
+        const password = String(
+          req.body.password
+        );
+
+        if (password.length < 6) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Password must be at least 6 characters",
+          });
+        }
+
         update.passwordHash =
           await bcrypt.hash(
-            String(req.body.password),
+            password,
             10
           );
       }
@@ -683,6 +408,11 @@ router.patch(
       });
 
     } catch (error) {
+      console.error(
+        "Update user error:",
+        error
+      );
+
       return res.status(500).json({
         success: false,
         message: error.message,
@@ -729,6 +459,11 @@ router.delete(
       });
 
     } catch (error) {
+      console.error(
+        "Delete user error:",
+        error
+      );
+
       return res.status(500).json({
         success: false,
         message: error.message,
@@ -773,6 +508,14 @@ router.post(
         });
       }
 
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Password must be at least 6 characters",
+        });
+      }
+
       if (await User.findOne({ email })) {
         return res.status(409).json({
           success: false,
@@ -800,6 +543,11 @@ router.post(
       });
 
     } catch (error) {
+      console.error(
+        "Register error:",
+        error
+      );
+
       return res.status(500).json({
         success: false,
         message: error.message,
@@ -874,6 +622,11 @@ router.post(
       });
 
     } catch (error) {
+      console.error(
+        "Login error:",
+        error
+      );
+
       return res.status(500).json({
         success: false,
         message: error.message,

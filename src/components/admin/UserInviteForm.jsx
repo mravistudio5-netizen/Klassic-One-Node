@@ -25,6 +25,7 @@ const ROLE_OPTIONS = [
 export default function UserInviteForm({ onInvited }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState("manager");
 
   const [matrix, setMatrix] = useState(() =>
@@ -119,8 +120,15 @@ export default function UserInviteForm({ onInvited }) {
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim();
 
+    const cleanPassword = password.trim();
+
     if (!cleanEmail) {
-      toast.error("Email required");
+      toast.error("Username / Email required");
+      return;
+    }
+
+    if (cleanPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
@@ -130,48 +138,34 @@ export default function UserInviteForm({ onInvited }) {
       // Save the permission matrix for this role.
       await saveMatrix();
 
-      // Create the user and send invitation email.
-      // Backend creates a temporary password and sends it via Titan SMTP.
-      const res = await apiFetch("/api/users/invite", {
+      // Create the user directly with username and password.
+      await apiFetch("/api/users/invite", {
         method: "POST",
         body: JSON.stringify({
           email: cleanEmail,
           name: cleanName,
+          password: cleanPassword,
           role,
+          matrix,
         }),
       });
 
-      toast.success(
-        `Invitation sent: ${cleanEmail}`
-      );
-
-      if (res?.temporaryPassword) {
-        toast.info(
-          `Temporary password: ${res.temporaryPassword}`,
-          {
-            duration: 10000,
-          }
-        );
-
-        console.log(
-          "Temporary password:",
-          res.temporaryPassword
-        );
-      }
+      toast.success(`User created: ${cleanEmail}`);
 
       setEmail("");
       setName("");
+      setPassword("");
       setShowMatrix(false);
 
       onInvited?.();
     } catch (error) {
       console.error(
-        "Send invitation failed:",
+        "Create user failed:",
         error
       );
 
       toast.error(
-        "Invite failed: " +
+        "Create user failed: " +
           (error.message || "Unknown error")
       );
     } finally {
@@ -202,8 +196,17 @@ export default function UserInviteForm({ onInvited }) {
         onChange={(e) =>
           setEmail(e.target.value)
         }
-        placeholder="email@example.com"
+        placeholder="Username / email"
         className="input"
+      />
+
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        className="input"
+        autoComplete="new-password"
       />
 
       <div className="flex items-center gap-2">
@@ -268,19 +271,19 @@ export default function UserInviteForm({ onInvited }) {
         {inviting ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            Sending...
+            Creating...
           </>
         ) : (
           <>
             <UserPlus className="w-4 h-4" />
-            Send Invite
+            Create User
           </>
         )}
       </button>
 
       <p className="text-[11px] text-slate-400 text-center">
-        The user will be created with the selected
-        role and permissions.
+        Create the user with a username, password, selected
+        role and permissions. No email invitation is sent.
       </p>
     </div>
   );
