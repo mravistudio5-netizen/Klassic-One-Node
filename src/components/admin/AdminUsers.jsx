@@ -161,17 +161,21 @@ export default function AdminUsers() {
 
       // Password फक्त नवीन password दिला असेल तरच पाठवायचा
       if (editForm.password.trim()) {
-        payload.password =
-          editForm.password;
-      }
+  await apiFetch(
+    `/api/users/${editingUser.id}/password`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        password: editForm.password.trim(),
+      }),
+    }
+  );
 
-      await apiFetch(
-        `/api/users/${editingUser.id}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify(payload),
-        }
-      );
+  toast.success("Password updated successfully");
+  closeEdit();
+  await load();
+  return;
+}
 
       toast.success(
         "User updated successfully"

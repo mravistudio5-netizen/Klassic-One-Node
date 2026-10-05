@@ -327,7 +327,60 @@ router.post(
 // ======================================================
 // UPDATE USER
 // ======================================================
+// ======================================================
+// RESET USER PASSWORD
+// ======================================================
 
+router.patch(
+  "/:id/password",
+  requireAuth,
+  requireRoles("owner", "admin"),
+  async (req, res) => {
+    try {
+      const password = String(req.body.password || "");
+
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 6 characters",
+        });
+      }
+
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: {
+            passwordHash,
+          },
+        },
+        {
+          new: true,
+        }
+      ).select("-passwordHash");
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Password updated successfully",
+      });
+    } catch (error) {
+      console.error("Reset password error:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+);
 router.patch(
   "/:id",
   requireAuth,
