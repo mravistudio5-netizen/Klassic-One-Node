@@ -71,10 +71,12 @@ export default function Login() {
         {/* HEADER */}
         <div className="text-center mb-9">
           <div className="flex justify-center mb-5">
-            <div className="text-2xl font-bold text-slate-950">
-              Klassic One
-            </div>
-          </div>
+  <img
+    src="/src/assets/klassic-logo.png"
+    alt="Klassic One"
+    className="h-14 w-auto object-contain"
+  />
+</div>
 
           <h1 className="text-3xl font-bold tracking-tight text-slate-950">
             Welcome back
@@ -84,6 +86,9 @@ export default function Login() {
             Log in to your account
           </p>
         </div>
+        <p className="mt-3 text-xs text-slate-400">
+  Developed by Ravion
+</p>
 
         {/* CARD */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
