@@ -103,7 +103,10 @@ export default function MySheets() {
     );
   }
 
-  if (me && !["owner", "admin"].includes(me.role)) {
+  if (
+  me &&
+  !["owner", "admin", "manager"].includes(me.role)
+) {
     return (
       <div className="p-6">
         <div className="rounded-2xl border bg-white p-10 text-center">
