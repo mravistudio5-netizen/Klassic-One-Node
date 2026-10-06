@@ -123,11 +123,36 @@ export default function TaskList({ scope = "all" }) {
         `/api/tasks?${params.toString()}`
       );
 
-      setTasks(
+      const loadedTasks =
   response.items ||
   response.tasks ||
-  []
-);
+  [];
+
+// My Tasks = only tasks assigned to logged-in user
+if (scope === "mine") {
+  const currentUserId =
+    String(user?.id || user?._id || "");
+
+  setTasks(
+    loadedTasks.filter((task) => {
+      const assignedUserId =
+        String(
+          task?.assigned_to_id ||
+          task?.assignedToId ||
+          task?.assigned_to ||
+          ""
+        );
+
+      return (
+        assignedUserId &&
+        assignedUserId === currentUserId
+      );
+    })
+  );
+} else {
+  // All Tasks = all returned tasks
+  setTasks(loadedTasks);
+}
     } catch (error) {
       console.error(
         "Task loading failed:",

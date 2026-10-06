@@ -56,9 +56,10 @@ router.get("/roles/:role", requireAuth, async (req, res) => {
     }).lean();
 
     res.json({
-      success: true,
-      item: item || null,
-    });
+  success: true,
+  item: item || null,
+  permission: item || null,
+});
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -84,9 +85,10 @@ router.get("/:role", requireAuth, async (req, res) => {
     }).lean();
 
     res.json({
-      success: true,
-      item: item || null,
-    });
+  success: true,
+  item: item || null,
+  permission: item || null,
+});
   } catch (error) {
     res.status(500).json({
       success: false,
