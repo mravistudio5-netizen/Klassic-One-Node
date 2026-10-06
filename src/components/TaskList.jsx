@@ -7,6 +7,7 @@ import {
   Plus,
   Clock,
   CheckCircle2,
+  Trash2,
 } from "lucide-react";
 
 const priorityColors = {
@@ -33,18 +34,13 @@ const COMPLETED_STATUSES = [
 ];
 
 export default function TaskList({ scope = "all" }) {
-  // scope:
-  // "all"  = owner / MIS
-  // "mine" = manager
-
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("active");
   const [loading, setLoading] = useState(true);
+  const [me, setMe] = useState(null);
 
   const { t } = useLang();
   const { can } = usePermissions();
-
-  const [me, setMe] = useState(null);
 
   useEffect(() => {
     let alive = true;
@@ -53,22 +49,15 @@ export default function TaskList({ scope = "all" }) {
       try {
         setLoading(true);
 
-        // Get currently logged-in user
         const meResponse = await apiFetch("/api/auth/me");
-
-        const user = meResponse.user;
+        const user = meResponse?.user || meResponse;
 
         if (!alive) return;
 
         setMe(user);
-
-        // Load tasks
         await loadTasks(user);
       } catch (error) {
-        console.error(
-          "Task list loading failed:",
-          error
-        );
+        console.error("Task list loading failed:", error);
 
         if (alive) {
           setTasks([]);
@@ -94,28 +83,15 @@ export default function TaskList({ scope = "all" }) {
       params.set("limit", "50");
       params.set("sort", "-due_date");
 
-      // Existing behaviour:
-      // manager sees only assigned tasks
       if (scope === "mine") {
-        if (user?.id) {
-          params.set(
-            "assigned_to_id",
-            user.id
-          );
-        } else if (user?._id) {
-          params.set(
-            "assigned_to_id",
-            user._id
-          );
+        const userId = user?.id || user?._id;
+
+        if (userId) {
+          params.set("assigned_to_id", String(userId));
         }
       }
 
-      // Existing behaviour:
-      // owner / MIS can filter by selected store
-      if (
-        scope !== "mine" &&
-        storeId !== "all"
-      ) {
+      if (scope !== "mine" && storeId !== "all") {
         params.set("store_id", storeId);
       }
 
@@ -124,41 +100,35 @@ export default function TaskList({ scope = "all" }) {
       );
 
       const loadedTasks =
-  response.items ||
-  response.tasks ||
-  [];
+        response?.items ||
+        response?.tasks ||
+        [];
 
-// My Tasks = only tasks assigned to logged-in user
-if (scope === "mine") {
-  const currentUserId =
-    String(user?.id || user?._id || "");
-
-  setTasks(
-    loadedTasks.filter((task) => {
-      const assignedUserId =
-        String(
-          task?.assigned_to_id ||
-          task?.assignedToId ||
-          task?.assigned_to ||
-          ""
+      if (scope === "mine") {
+        const currentUserId = String(
+          user?.id || user?._id || ""
         );
 
-      return (
-        assignedUserId &&
-        assignedUserId === currentUserId
-      );
-    })
-  );
-} else {
-  // All Tasks = all returned tasks
-  setTasks(loadedTasks);
-}
-    } catch (error) {
-      console.error(
-        "Task loading failed:",
-        error
-      );
+        setTasks(
+          loadedTasks.filter((task) => {
+            const assignedUserId = String(
+              task?.assigned_to_id ||
+                task?.assignedToId ||
+                task?.assigned_to ||
+                ""
+            );
 
+            return (
+              assignedUserId &&
+              assignedUserId === currentUserId
+            );
+          })
+        );
+      } else {
+        setTasks(loadedTasks);
+      }
+    } catch (error) {
+      console.error("Task loading failed:", error);
       setTasks([]);
     } finally {
       setLoading(false);
@@ -189,11 +159,7 @@ if (scope === "mine") {
 
   const filtered = tasks.filter((task) => {
     if (filter === "active") {
-      if (
-        COMPLETED_STATUSES.includes(
-          task.status
-        )
-      ) {
+      if (COMPLETED_STATUSES.includes(task.status)) {
         return false;
       }
 
@@ -251,10 +217,45 @@ if (scope === "mine") {
     );
   });
 
-  const canCreate = can(
-    "tasks",
-    "create"
-  );
+  const canCreate = can("tasks", "create");
+
+  // Delete is available only to Owner/Admin.
+  // Backend also enforces Owner/Admin permission.
+  const canDelete =
+    can("tasks", "delete") &&
+    ["owner", "admin"].includes(me?.role);
+
+  const handleDelete = async (taskId, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await apiFetch(`/api/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+
+      setTasks((current) =>
+        current.filter(
+          (task) =>
+            String(task.id || task._id) !==
+            String(taskId)
+        )
+      );
+    } catch (error) {
+      console.error("Task delete failed:", error);
+
+      window.alert(
+        error?.message ||
+          "Failed to delete task"
+      );
+    }
+  };
 
   return (
     <div className="p-4 space-y-4">
@@ -319,83 +320,100 @@ if (scope === "mine") {
       ) : (
         <div className="space-y-3">
           {filtered.map((task) => {
-            const taskId =
-              task.id || task._id;
+            const taskId = task.id || task._id;
 
             return (
-              <Link
+              <div
                 key={taskId}
-                to={`/tasks/${taskId}`}
-                className="block bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
+                className="relative bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-slate-900 text-sm leading-snug flex-1">
-                    {task.title}
-                  </h3>
+                <Link
+                  to={`/tasks/${taskId}`}
+                  className="block p-4"
+                >
+                  <div className="flex items-start justify-between gap-2 pr-10">
+                    <h3 className="font-semibold text-slate-900 text-sm leading-snug flex-1">
+                      {task.title}
+                    </h3>
 
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      priorityColors[
-                        task.priority
-                      ] || ""
-                    }`}
-                  >
-                    {task.priority}
-                  </span>
-                </div>
-
-                {task.assigned_to_name &&
-                  scope !== "mine" && (
-                    <p className="text-xs text-slate-500 mt-1">
-                      {t("assignTo")}:{" "}
-                      {task.assigned_to_name}
-                    </p>
-                  )}
-
-                <div className="flex items-center justify-between mt-2">
-                  <span
-                    className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                      statusColors[
-                        task.status
-                      ] || ""
-                    }`}
-                  >
-                    {t(
-                      task.status
-                        ?.toLowerCase()
-                        ?.replace(/\s/g, "")
-                    ) || task.status}
-                  </span>
-
-                  <div className="flex items-center gap-1 text-[11px] text-slate-400">
-                    {task.due_date && (
-                      <Clock className="w-3 h-3" />
-                    )}
-
-                    <span>
-                      {task.due_date
-                        ? new Date(
-                            task.due_date
-                          ).toLocaleString(
-                            [],
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              day: "numeric",
-                              month: "short",
-                            }
-                          )
-                        : ""}
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        priorityColors[
+                          task.priority
+                        ] || ""
+                      }`}
+                    >
+                      {task.priority}
                     </span>
                   </div>
-                </div>
 
-                {task.location_tag && (
-                  <p className="text-[11px] text-slate-400 mt-1.5">
-                    📍 {task.location_tag}
-                  </p>
+                  {task.assigned_to_name &&
+                    scope !== "mine" && (
+                      <p className="text-xs text-slate-500 mt-1">
+                        {t("assignTo")}:{" "}
+                        {task.assigned_to_name}
+                      </p>
+                    )}
+
+                  <div className="flex items-center justify-between mt-2">
+                    <span
+                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                        statusColors[
+                          task.status
+                        ] || ""
+                      }`}
+                    >
+                      {t(
+                        task.status
+                          ?.toLowerCase()
+                          ?.replace(/\s/g, "")
+                      ) || task.status}
+                    </span>
+
+                    <div className="flex items-center gap-1 text-[11px] text-slate-400">
+                      {task.due_date && (
+                        <Clock className="w-3 h-3" />
+                      )}
+
+                      <span>
+                        {task.due_date
+                          ? new Date(
+                              task.due_date
+                            ).toLocaleString(
+                              [],
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                day: "numeric",
+                                month: "short",
+                              }
+                            )
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  {task.location_tag && (
+                    <p className="text-[11px] text-slate-400 mt-1.5">
+                      📍 {task.location_tag}
+                    </p>
+                  )}
+                </Link>
+
+                {canDelete && (
+                  <button
+                    type="button"
+                    onClick={(event) =>
+                      handleDelete(taskId, event)
+                    }
+                    className="absolute top-3 right-3 z-10 p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                    title="Delete Task"
+                    aria-label="Delete Task"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 )}
-              </Link>
+              </div>
             );
           })}
         </div>
