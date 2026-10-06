@@ -31,10 +31,9 @@ async function getDashboardData(req) {
 
   const baseTaskQuery = {};
 
-  if (role === "manager") {
-    baseTaskQuery.assigned_to_id =
-      req.user._id.toString();
-  }
+  if (["owner", "admin", "manager"].includes(role)) {
+  baseTaskQuery.assigned_to_id = req.user._id.toString();
+}
 
   if (
     req.query.store_id &&
