@@ -123,7 +123,11 @@ export default function TaskList({ scope = "all" }) {
         `/api/tasks?${params.toString()}`
       );
 
-      setTasks(response.tasks || []);
+      setTasks(
+  response.items ||
+  response.tasks ||
+  []
+);
     } catch (error) {
       console.error(
         "Task loading failed:",
