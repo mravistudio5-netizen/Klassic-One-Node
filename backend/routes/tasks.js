@@ -106,6 +106,10 @@ router.get("/", async (req, res) => {
 
     const query = {};
 
+    // --------------------------------------------------
+    // STORE FILTER
+    // --------------------------------------------------
+
     if (
       store_id &&
       store_id !== "all"
@@ -113,10 +117,42 @@ router.get("/", async (req, res) => {
       query.store_id = store_id;
     }
 
-    if (assigned_to_id) {
+    // --------------------------------------------------
+    // TASK VISIBILITY
+    //
+    // owner/admin/mis:
+    //   can request all tasks
+    //
+    // manager/other users:
+    //   ONLY their own assigned tasks
+    // --------------------------------------------------
+
+    const role = req.user?.role;
+
+    const currentUserId =
+      req.user?._id?.toString();
+
+    const canViewAllTasks =
+      ["owner", "admin", "mis"].includes(role);
+
+    if (canViewAllTasks) {
+      // Admin / Owner / MIS
+      // If assigned_to_id is supplied,
+      // filter by that user.
+      if (assigned_to_id) {
+        query.assigned_to_id =
+          assigned_to_id;
+      }
+    } else {
+      // Manager / other users
+      // NEVER allow them to request another user's tasks.
       query.assigned_to_id =
-        assigned_to_id;
+        currentUserId;
     }
+
+    // --------------------------------------------------
+    // STATUS FILTER
+    // --------------------------------------------------
 
     if (status) {
       if (Array.isArray(status)) {
@@ -128,15 +164,27 @@ router.get("/", async (req, res) => {
       }
     }
 
+    // --------------------------------------------------
+    // ACTIVE FILTER
+    // --------------------------------------------------
+
     if (active !== undefined) {
       query.active =
         active === "true";
     }
 
+    // --------------------------------------------------
+    // TEMPLATE FILTER
+    // --------------------------------------------------
+
     if (template_name) {
       query.template_name =
         template_name;
     }
+
+    // --------------------------------------------------
+    // FETCH TASKS
+    // --------------------------------------------------
 
     const items =
       await Task.find(query)
@@ -156,6 +204,7 @@ router.get("/", async (req, res) => {
       success: true,
       items: items.map(cleanTask),
     });
+
   } catch (error) {
     console.error(
       "GET /api/tasks error:",
