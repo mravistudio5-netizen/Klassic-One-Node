@@ -27,7 +27,7 @@ const roleDefaults = {
     tasks: FULL,
     myTasks: ["read"],
     checklists: ["read", "export"],
-    sheets: ["read"],
+    sheets: ["create", "read", "update"],
     reports: ["read", "export"],
     admin: ["read"],
   },
