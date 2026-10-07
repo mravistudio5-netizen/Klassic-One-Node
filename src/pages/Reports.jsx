@@ -33,7 +33,6 @@ export default function Reports() {
 
 
 
-  const { can } = usePermissions();
 
 
 
