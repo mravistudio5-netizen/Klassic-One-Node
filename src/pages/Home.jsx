@@ -12,6 +12,7 @@ import {
   FileSpreadsheet,
   BarChart3,
   ListChecks,
+  ClipboardCheck,
 } from "lucide-react";
 
 const COMPLETED_STATUSES = [
@@ -381,7 +382,11 @@ export default function Home() {
               icon={ListChecks}
               label="Task Admin"
             />
-
+<QuickActionCard
+  to="/checklist-admin"
+  icon={ClipboardCheck}
+  label="Checklist Admin"
+/>
           </div>
         </div>
       )}
