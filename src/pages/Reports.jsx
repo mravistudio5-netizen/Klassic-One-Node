@@ -248,55 +248,7 @@ export default function Reports() {
 
 
 
-setUsers(userResponse.users || []);
-
-
-
-          (userResponse.users || []).filter(
-
-
-
-            (user) =>
-
-
-
-              [
-
-
-
-                "manager",
-
-
-
-                "tailoring_manager",
-
-
-
-                "tailoring_operator",
-
-
-
-                "admin",
-
-
-
-                "mis",
-
-
-
-                "owner",
-
-
-
-              ].includes(user.role)
-
-
-
-          )
-
-
-
-        );
+        setUsers(userResponse.users || []);
 
 
 
@@ -2580,40 +2532,60 @@ function PeriodToggle({
 
 
 
+
 function ManagerFilter({
-  users,
-  value,
-  onChange,
+
+
+
+  users,
+
+
+
+  value,
+
+
+
+  onChange,
+
+
+
 }) {
-  return (
-    <select
-      value={value}
-      onChange={(event) =>
-        onChange(event.target.value)
-      }
-      className="text-xs px-3 py-1.5 rounded-full border border-slate-200 bg-white max-w-[180px]"
-    >
-      <option value="all">
-        All Users
-      </option>
-
-      {users.map((user) => (
-        <option
-          key={user.id || user._id}
-          value={user.id || user._id}
-        >
-          {user.name ||
-            user.full_name ||
-            user.email}
-        </option>
-      ))}
-    </select>
-  );
-}
 
 
 
-      className="text-xs px-3 py-1.5 rounded-full border border-slate-200 bg-white max-w-[160px]"
+  return (
+
+
+
+    <select
+
+
+
+      value={value}
+
+
+
+      onChange={(event) =>
+
+
+
+        onChange(
+
+
+
+          event.target.value
+
+
+
+        )
+
+
+
+      }
+
+
+
+      className="text-xs px-3 py-1.5 rounded-full border border-slate-200 bg-white max-w-[180px]"
 
 
 
@@ -2625,7 +2597,7 @@ function ManagerFilter({
 
 
 
-        All Managers
+        All Users
 
 
 
