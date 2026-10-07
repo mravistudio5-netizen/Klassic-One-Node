@@ -248,7 +248,24 @@ export default function Reports() {
 
 
 
-        setUsers(userResponse.users || []);
+       console.log("USERS API RESPONSE:", userResponse);
+
+const loadedUsers =
+  userResponse?.users ||
+  userResponse?.items ||
+  userResponse?.data?.users ||
+  userResponse?.data?.items ||
+  userResponse?.result?.users ||
+  userResponse?.result?.items ||
+  [];
+
+console.log("LOADED USERS:", loadedUsers);
+
+setUsers(
+  Array.isArray(loadedUsers)
+    ? loadedUsers
+    : []
+);
 
 
 
