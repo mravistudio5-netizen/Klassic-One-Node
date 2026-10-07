@@ -19,18 +19,54 @@ const COMPLETED_STATUSES = [
   "completed",
   "approved",
   "closed",
+  "cancelled",
+  "rejected",
 ];
+
+const normalizeStatus = (status) =>
+  String(status || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
+
+const getTaskDate = (task, ...keys) => {
+  for (const key of keys) {
+    if (task?.[key]) return task[key];
+  }
+  return null;
+};
+
+const isValidDate = (value) => {
+  if (!value) return false;
+  const date = new Date(value);
+  return !Number.isNaN(date.getTime());
+};
+
+const isToday = (value) => {
+  if (!isValidDate(value)) return false;
+
+  const date = new Date(value);
+  const now = new Date();
+
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+  );
+};
 
 export default function Home() {
   const { user, activeStoreId } = useOutletContext();
   const { t } = useLang();
 
-  const role =
-    user?.role === "admin"
-      ? "owner"
-      : user?.role || "manager";
+  const rawRole = user?.role || "manager";
 
-  const isAdminRole = ["owner", "admin"].includes(user?.role);
+  const isAdminRole = ["owner", "admin"].includes(rawRole);
+
+  const role =
+    rawRole === "admin"
+      ? "owner"
+      : rawRole;
 
   const isTailorRole = [
     "tailoring_manager",
@@ -78,7 +114,8 @@ export default function Home() {
         if (cancelled) return;
 
         // --------------------------------------------------
-        // ADMIN / OWNER TASK DASHBOARD STATS
+        // OWNER / ADMIN TASK COUNTS
+        // Uses the same task data that the Tasks page uses.
         // --------------------------------------------------
 
         if (isAdminRole) {
@@ -89,93 +126,59 @@ export default function Home() {
 
           const now = new Date();
 
-          const startOfToday = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            0,
-            0,
-            0,
-            0
-          );
-
-          const endOfToday = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59,
-            999
-          );
-
           let today = 0;
           let pending = 0;
           let overdue = 0;
           let completed = 0;
 
           tasks.forEach((task) => {
-            const status = String(
-              task?.status || ""
-            )
-              .trim()
-              .toLowerCase()
-              .replace(/[\s_-]+/g, "");
+            const status = normalizeStatus(
+              task?.status
+            );
 
             const isCompleted =
               COMPLETED_STATUSES.includes(status);
 
-            // -----------------------------
-            // Completed
-            // -----------------------------
+            // Completed count
             if (isCompleted) {
               completed += 1;
             }
 
-            // -----------------------------
-            // Pending
-            // -----------------------------
+            // Pending = anything not completed
             if (!isCompleted) {
               pending += 1;
             }
 
-            // -----------------------------
-            // Today's Tasks
-            // -----------------------------
-            const taskDate =
-              task?.due_date ||
-              task?.start_date ||
-              task?.created_at;
+            // Today's task:
+            // Prefer due date, then start date, then created date.
+            const todayDate = getTaskDate(
+              task,
+              "due_date",
+              "dueDate",
+              "start_date",
+              "startDate",
+              "created_at",
+              "createdAt"
+            );
 
-            if (taskDate) {
-              const date = new Date(taskDate);
-
-              if (
-                !Number.isNaN(date.getTime()) &&
-                date >= startOfToday &&
-                date <= endOfToday
-              ) {
-                today += 1;
-              }
+            if (isToday(todayDate)) {
+              today += 1;
             }
 
-            // -----------------------------
-            // Overdue
-            // -----------------------------
-            if (
-              task?.due_date &&
-              !isCompleted
-            ) {
-              const dueDate = new Date(
-                task.due_date
-              );
+            // Overdue:
+            // Due date has passed and task is not completed.
+            const dueDate = getTaskDate(
+              task,
+              "due_date",
+              "dueDate"
+            );
 
-              if (
-                !Number.isNaN(dueDate.getTime()) &&
-                dueDate < now
-              ) {
-                overdue += 1;
-              }
+            if (
+              !isCompleted &&
+              isValidDate(dueDate) &&
+              new Date(dueDate) < now
+            ) {
+              overdue += 1;
             }
           });
 
@@ -186,9 +189,8 @@ export default function Home() {
             completed,
           });
         } else {
-          // Manager / other roles:
-          // Keep dashboard cards at zero because
-          // the admin dashboard cards are hidden for them.
+          // Manager should not use the Owner/Admin dashboard
+          // task totals.
           setStats({
             today: 0,
             pending: 0,
@@ -247,10 +249,7 @@ export default function Home() {
   return (
     <div className="p-4 space-y-4">
 
-      {/* --------------------------------------------------
-          WELCOME
-      -------------------------------------------------- */}
-
+      {/* Welcome */}
       <div>
         <p className="text-sm text-slate-500">
           {t("welcome")}
@@ -263,11 +262,7 @@ export default function Home() {
         </h2>
       </div>
 
-      {/* --------------------------------------------------
-          NORMAL TASK STATS
-          OWNER / ADMIN / MANAGER
-      -------------------------------------------------- */}
-
+      {/* Normal task dashboard */}
       {!isTailorRole && (
         <div className="grid grid-cols-2 gap-3">
 
@@ -318,10 +313,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* --------------------------------------------------
-          TAILOR STATS
-      -------------------------------------------------- */}
-
+      {/* Tailor dashboard */}
       {isTailorRole && (
         <div className="grid grid-cols-2 gap-3">
 
@@ -350,11 +342,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* --------------------------------------------------
-          QUICK ACTIONS
-          OWNER / ADMIN ONLY
-      -------------------------------------------------- */}
-
+      {/* Quick Actions — OWNER / ADMIN ONLY */}
       {isAdminRole && !isTailorRole && (
         <div className="space-y-3 pt-1">
 
@@ -402,10 +390,6 @@ export default function Home() {
   );
 }
 
-/* --------------------------------------------------
-   QUICK ACTION CARD
--------------------------------------------------- */
-
 function QuickActionCard({
   to,
   icon: Icon,
@@ -416,24 +400,16 @@ function QuickActionCard({
       to={to}
       className="group bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all cursor-pointer min-h-[86px] flex flex-col items-center justify-center text-center"
     >
-
       <div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-slate-100 flex items-center justify-center mb-2 transition-colors">
-
         <Icon className="w-5 h-5" />
-
       </div>
 
       <p className="text-xs font-medium text-slate-700">
         {label}
       </p>
-
     </Link>
   );
 }
-
-/* --------------------------------------------------
-   STAT CARD
--------------------------------------------------- */
 
 function StatCard({
   icon: Icon,
