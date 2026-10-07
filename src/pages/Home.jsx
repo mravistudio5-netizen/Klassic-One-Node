@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useLang } from "@/lib/i18n";
 import { apiFetch } from "@/api";
 
@@ -9,6 +9,9 @@ import {
   AlertTriangle,
   CheckCircle2,
   Scissors,
+  FileSpreadsheet,
+  BarChart3,
+  ListChecks,
 } from "lucide-react";
 
 export default function Home() {
@@ -168,7 +171,64 @@ export default function Home() {
         </div>
       )}
 
+      {!isTailorRole && (
+        <div className="space-y-3 pt-1">
+          <h3 className="text-sm font-semibold text-slate-700">
+            Quick Actions
+          </h3>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <QuickActionCard
+              to="/my-tasks"
+              icon={CheckSquare}
+              label="My Tasks"
+            />
+
+            <QuickActionCard
+              to="/tasks"
+              icon={CheckSquare}
+              label="Tasks"
+            />
+
+            <QuickActionCard
+              to="/reports"
+              icon={BarChart3}
+              label="Reports"
+            />
+
+            <QuickActionCard
+              to="/sheets"
+              icon={FileSpreadsheet}
+              label="My Sheets"
+            />
+
+            <QuickActionCard
+              to="/task-admin"
+              icon={ListChecks}
+              label="Task Admin"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
+  );
+}
+
+function QuickActionCard({ to, icon: Icon, label }) {
+  return (
+    <Link
+      to={to}
+      className="group bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all cursor-pointer min-h-[86px] flex flex-col items-center justify-center text-center"
+    >
+      <div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-slate-100 flex items-center justify-center mb-2 transition-colors">
+        <Icon className="w-5 h-5" />
+      </div>
+
+      <p className="text-xs font-medium text-slate-700">
+        {label}
+      </p>
+    </Link>
   );
 }
 
