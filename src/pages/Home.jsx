@@ -14,6 +14,13 @@ import {
   ListChecks,
 } from "lucide-react";
 
+const COMPLETED_STATUSES = [
+  "done",
+  "completed",
+  "approved",
+  "closed",
+];
+
 export default function Home() {
   const { user, activeStoreId } = useOutletContext();
   const { t } = useLang();
@@ -22,6 +29,8 @@ export default function Home() {
     user?.role === "admin"
       ? "owner"
       : user?.role || "manager";
+
+  const isAdminRole = ["owner", "admin"].includes(user?.role);
 
   const isTailorRole = [
     "tailoring_manager",
@@ -57,39 +66,170 @@ export default function Home() {
             ? `?store_id=${encodeURIComponent(activeStoreId)}`
             : "";
 
-        const [dashboardRes, tailorRes] = await Promise.all([
-          apiFetch(`/api/dashboard/owner${storeQuery}`),
-          apiFetch(`/api/tailor/stats${storeQuery}`),
-        ]);
+        const [taskResponse, tailorResponse] =
+          await Promise.all([
+            isAdminRole
+              ? apiFetch(`/api/tasks${storeQuery}`)
+              : Promise.resolve(null),
+
+            apiFetch(`/api/tailor/stats${storeQuery}`),
+          ]);
 
         if (cancelled) return;
 
-        if (dashboardRes?.stats) {
+        // --------------------------------------------------
+        // ADMIN / OWNER TASK DASHBOARD STATS
+        // --------------------------------------------------
+
+        if (isAdminRole) {
+          const tasks =
+            taskResponse?.items ||
+            taskResponse?.tasks ||
+            [];
+
+          const now = new Date();
+
+          const startOfToday = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            0,
+            0,
+            0,
+            0
+          );
+
+          const endOfToday = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59,
+            999
+          );
+
+          let today = 0;
+          let pending = 0;
+          let overdue = 0;
+          let completed = 0;
+
+          tasks.forEach((task) => {
+            const status = String(
+              task?.status || ""
+            )
+              .trim()
+              .toLowerCase()
+              .replace(/[\s_-]+/g, "");
+
+            const isCompleted =
+              COMPLETED_STATUSES.includes(status);
+
+            // -----------------------------
+            // Completed
+            // -----------------------------
+            if (isCompleted) {
+              completed += 1;
+            }
+
+            // -----------------------------
+            // Pending
+            // -----------------------------
+            if (!isCompleted) {
+              pending += 1;
+            }
+
+            // -----------------------------
+            // Today's Tasks
+            // -----------------------------
+            const taskDate =
+              task?.due_date ||
+              task?.start_date ||
+              task?.created_at;
+
+            if (taskDate) {
+              const date = new Date(taskDate);
+
+              if (
+                !Number.isNaN(date.getTime()) &&
+                date >= startOfToday &&
+                date <= endOfToday
+              ) {
+                today += 1;
+              }
+            }
+
+            // -----------------------------
+            // Overdue
+            // -----------------------------
+            if (
+              task?.due_date &&
+              !isCompleted
+            ) {
+              const dueDate = new Date(
+                task.due_date
+              );
+
+              if (
+                !Number.isNaN(dueDate.getTime()) &&
+                dueDate < now
+              ) {
+                overdue += 1;
+              }
+            }
+          });
+
           setStats({
-            today: dashboardRes.stats.today || 0,
-            completed: dashboardRes.stats.completed || 0,
-            overdue: dashboardRes.stats.overdue || 0,
-            pending: dashboardRes.stats.pending || 0,
+            today,
+            pending,
+            overdue,
+            completed,
+          });
+        } else {
+          // Manager / other roles:
+          // Keep dashboard cards at zero because
+          // the admin dashboard cards are hidden for them.
+          setStats({
+            today: 0,
+            pending: 0,
+            overdue: 0,
+            completed: 0,
           });
         }
+
+        // --------------------------------------------------
+        // TAILOR STATS
+        // --------------------------------------------------
 
         setTailorStats({
           alterActive: Math.max(
             0,
-            (tailorRes?.totalAlterations || 0) -
-              (tailorRes?.completedAlterations || 0)
+            (tailorResponse?.totalAlterations || 0) -
+              (tailorResponse?.completedAlterations || 0)
           ),
 
           stitchActive: Math.max(
             0,
-            (tailorRes?.totalPantStitch || 0) -
-              (tailorRes?.completedPantStitch || 0)
+            (tailorResponse?.totalPantStitch || 0) -
+              (tailorResponse?.completedPantStitch || 0)
           ),
 
           overdue: 0,
         });
       } catch (error) {
-        console.error("Dashboard load failed:", error);
+        console.error(
+          "Dashboard load failed:",
+          error
+        );
+
+        if (!cancelled) {
+          setStats({
+            today: 0,
+            pending: 0,
+            overdue: 0,
+            completed: 0,
+          });
+        }
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -102,10 +242,14 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [user, activeStoreId]);
+  }, [user, activeStoreId, isAdminRole]);
 
   return (
     <div className="p-4 space-y-4">
+
+      {/* --------------------------------------------------
+          WELCOME
+      -------------------------------------------------- */}
 
       <div>
         <p className="text-sm text-slate-500">
@@ -113,9 +257,16 @@ export default function Home() {
         </p>
 
         <h2 className="text-2xl font-bold text-slate-900">
-          {user?.full_name || user?.name || "Staff"}
+          {user?.full_name ||
+            user?.name ||
+            "Staff"}
         </h2>
       </div>
+
+      {/* --------------------------------------------------
+          NORMAL TASK STATS
+          OWNER / ADMIN / MANAGER
+      -------------------------------------------------- */}
 
       {!isTailorRole && (
         <div className="grid grid-cols-2 gap-3">
@@ -123,33 +274,53 @@ export default function Home() {
           <StatCard
             icon={CheckSquare}
             label={t("todayTasks")}
-            value={loading ? "—" : stats.today}
+            value={
+              loading
+                ? "—"
+                : stats.today
+            }
             color="bg-blue-50 text-blue-700"
           />
 
           <StatCard
             icon={Clock}
             label={t("pending")}
-            value={loading ? "—" : stats.pending}
+            value={
+              loading
+                ? "—"
+                : stats.pending
+            }
             color="bg-amber-50 text-amber-700"
           />
 
           <StatCard
             icon={AlertTriangle}
             label={t("overdue")}
-            value={loading ? "—" : stats.overdue}
+            value={
+              loading
+                ? "—"
+                : stats.overdue
+            }
             color="bg-red-50 text-red-700"
           />
 
           <StatCard
             icon={CheckCircle2}
             label={t("completed")}
-            value={loading ? "—" : stats.completed}
+            value={
+              loading
+                ? "—"
+                : stats.completed
+            }
             color="bg-green-50 text-green-700"
           />
 
         </div>
       )}
+
+      {/* --------------------------------------------------
+          TAILOR STATS
+      -------------------------------------------------- */}
 
       {isTailorRole && (
         <div className="grid grid-cols-2 gap-3">
@@ -157,27 +328,42 @@ export default function Home() {
           <StatCard
             icon={Scissors}
             label={t("alterations")}
-            value={loading ? "—" : tailorStats.alterActive}
+            value={
+              loading
+                ? "—"
+                : tailorStats.alterActive
+            }
             color="bg-purple-50 text-purple-700"
           />
 
           <StatCard
             icon={Scissors}
             label={t("pantStitching")}
-            value={loading ? "—" : tailorStats.stitchActive}
+            value={
+              loading
+                ? "—"
+                : tailorStats.stitchActive
+            }
             color="bg-indigo-50 text-indigo-700"
           />
 
         </div>
       )}
 
-      {!isTailorRole && (
+      {/* --------------------------------------------------
+          QUICK ACTIONS
+          OWNER / ADMIN ONLY
+      -------------------------------------------------- */}
+
+      {isAdminRole && !isTailorRole && (
         <div className="space-y-3 pt-1">
+
           <h3 className="text-sm font-semibold text-slate-700">
             Quick Actions
           </h3>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+
             <QuickActionCard
               to="/my-tasks"
               icon={CheckSquare}
@@ -207,6 +393,7 @@ export default function Home() {
               icon={ListChecks}
               label="Task Admin"
             />
+
           </div>
         </div>
       )}
@@ -215,22 +402,38 @@ export default function Home() {
   );
 }
 
-function QuickActionCard({ to, icon: Icon, label }) {
+/* --------------------------------------------------
+   QUICK ACTION CARD
+-------------------------------------------------- */
+
+function QuickActionCard({
+  to,
+  icon: Icon,
+  label,
+}) {
   return (
     <Link
       to={to}
       className="group bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all cursor-pointer min-h-[86px] flex flex-col items-center justify-center text-center"
     >
+
       <div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-slate-100 flex items-center justify-center mb-2 transition-colors">
+
         <Icon className="w-5 h-5" />
+
       </div>
 
       <p className="text-xs font-medium text-slate-700">
         {label}
       </p>
+
     </Link>
   );
 }
+
+/* --------------------------------------------------
+   STAT CARD
+-------------------------------------------------- */
 
 function StatCard({
   icon: Icon,
