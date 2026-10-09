@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 
 
 
+
+
+
+
 import { apiFetch } from "@/lib/api";
+
+
+
+
 
 
 
@@ -11,7 +19,16 @@ import { useLang } from "@/lib/i18n";
 
 
 
+
+
+
+
+
 import { Trash2, AlertTriangle } from "lucide-react";
+
+
+
+
 
 
 
@@ -25,7 +42,21 @@ import { toast } from "sonner";
 
 
 
+
+
+
+
+
+
+
+
+
+
 export default function Reports() {
+
+
+
+
 
 
 
@@ -40,11 +71,30 @@ export default function Reports() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
   const [tab, setTab] = useState("tasks");
 
 
 
+
+
+
+
   const [me, setMe] = useState(null);
+
+
+
+
 
 
 
@@ -56,7 +106,19 @@ export default function Reports() {
 
 
 
+
+
+
+
+
+
+
+
   const [reportPermissions, setReportPermissions] = useState({
+
+
+
+
 
 
 
@@ -64,7 +126,15 @@ export default function Reports() {
 
 
 
+
+
+
+
     not_done: false,
+
+
+
+
 
 
 
@@ -72,7 +142,15 @@ export default function Reports() {
 
 
 
+
+
+
+
     checklist_report: false,
+
+
+
+
 
 
 
@@ -84,7 +162,19 @@ export default function Reports() {
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
 
 
 
@@ -92,7 +182,15 @@ export default function Reports() {
 
 
 
+
+
+
+
       try {
+
+
+
+
 
 
 
@@ -100,7 +198,15 @@ export default function Reports() {
 
 
 
+
+
+
+
           await Promise.all([
+
+
+
+
 
 
 
@@ -108,11 +214,27 @@ export default function Reports() {
 
 
 
+
+
+
+
             apiFetch("/api/users?limit=100"),
 
 
 
+
+
+
+
           ]);
+
+
+
+
+
+
+
+
 
 
 
@@ -128,7 +250,23 @@ export default function Reports() {
 
 
 
+
+
+
+
+
+
+
+
         setMe(currentUser);
+
+
+
+
+
+
+
+
 
 
 
@@ -140,7 +278,15 @@ export default function Reports() {
 
 
 
+
+
+
+
         try {
+
+
+
+
 
 
 
@@ -148,11 +294,27 @@ export default function Reports() {
 
 
 
-            `/api/permissions/${currentUser.role}`
+
+
+
+
+            \`/api/permissions/${currentUser.role}\`
+
+
+
+
 
 
 
           );
+
+
+
+
+
+
+
+
 
 
 
@@ -164,7 +326,15 @@ export default function Reports() {
 
 
 
+
+
+
+
             permissionResponse?.item?.report_permissions || {
+
+
+
+
 
 
 
@@ -172,7 +342,15 @@ export default function Reports() {
 
 
 
+
+
+
+
               not_done: false,
+
+
+
+
 
 
 
@@ -180,7 +358,15 @@ export default function Reports() {
 
 
 
+
+
+
+
               checklist_report: false,
+
+
+
+
 
 
 
@@ -188,7 +374,15 @@ export default function Reports() {
 
 
 
+
+
+
+
           );
+
+
+
+
 
 
 
@@ -196,7 +390,15 @@ export default function Reports() {
 
 
 
+
+
+
+
           console.error(
+
+
+
+
 
 
 
@@ -204,11 +406,27 @@ export default function Reports() {
 
 
 
+
+
+
+
             permissionError
 
 
 
+
+
+
+
           );
+
+
+
+
+
+
+
+
 
 
 
@@ -220,7 +438,15 @@ export default function Reports() {
 
 
 
+
+
+
+
             task_report: false,
+
+
+
+
 
 
 
@@ -228,7 +454,15 @@ export default function Reports() {
 
 
 
+
+
+
+
             tailor_report: false,
+
+
+
+
 
 
 
@@ -236,7 +470,15 @@ export default function Reports() {
 
 
 
+
+
+
+
           });
+
+
+
+
 
 
 
@@ -248,24 +490,53 @@ export default function Reports() {
 
 
 
+
+
+
+
+
+
+
+
        console.log("USERS API RESPONSE:", userResponse);
 
+
+
 const loadedUsers =
-  userResponse?.users ||
-  userResponse?.items ||
-  userResponse?.data?.users ||
-  userResponse?.data?.items ||
-  userResponse?.result?.users ||
-  userResponse?.result?.items ||
-  [];
+
+  userResponse?.users ||
+
+  userResponse?.items ||
+
+  userResponse?.data?.users ||
+
+  userResponse?.data?.items ||
+
+  userResponse?.result?.users ||
+
+  userResponse?.result?.items ||
+
+  [];
+
+
 
 console.log("LOADED USERS:", loadedUsers);
 
+
+
 setUsers(
-  Array.isArray(loadedUsers)
-    ? loadedUsers
-    : []
+
+  Array.isArray(loadedUsers)
+
+    ? loadedUsers
+
+    : []
+
 );
+
+
+
+
 
 
 
@@ -273,7 +544,15 @@ setUsers(
 
 
 
+
+
+
+
         console.error(
+
+
+
+
 
 
 
@@ -281,7 +560,15 @@ setUsers(
 
 
 
+
+
+
+
           error
+
+
+
+
 
 
 
@@ -289,11 +576,23 @@ setUsers(
 
 
 
+
+
+
+
       }
 
 
 
+
+
+
+
     })();
+
+
+
+
 
 
 
@@ -305,11 +604,27 @@ setUsers(
 
 
 
+
+
+
+
+
+
+
+
   const isAdmin =
 
 
 
+
+
+
+
     me &&
+
+
+
+
 
 
 
@@ -321,7 +636,19 @@ setUsers(
 
 
 
+
+
+
+
+
+
+
+
   const isReviewer =
+
+
+
+
 
 
 
@@ -329,7 +656,15 @@ setUsers(
 
 
 
+
+
+
+
     ["owner", "admin", "mis"].includes(
+
+
+
+
 
 
 
@@ -337,7 +672,19 @@ setUsers(
 
 
 
+
+
+
+
     );
+
+
+
+
+
+
+
+
 
 
 
@@ -353,7 +700,19 @@ setUsers(
 
 
 
+
+
+
+
+
+
+
+
   // Individual report permissions
+
+
+
+
 
 
 
@@ -361,7 +720,15 @@ setUsers(
 
 
 
+
+
+
+
     tabs.push([
+
+
+
+
 
 
 
@@ -369,7 +736,15 @@ setUsers(
 
 
 
+
+
+
+
       t("taskReport"),
+
+
+
+
 
 
 
@@ -377,7 +752,19 @@ setUsers(
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -389,7 +776,15 @@ setUsers(
 
 
 
+
+
+
+
     tabs.push([
+
+
+
+
 
 
 
@@ -397,7 +792,15 @@ setUsers(
 
 
 
+
+
+
+
       "Not Done",
+
+
+
+
 
 
 
@@ -405,7 +808,19 @@ setUsers(
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -417,7 +832,15 @@ setUsers(
 
 
 
+
+
+
+
     tabs.push([
+
+
+
+
 
 
 
@@ -425,7 +848,15 @@ setUsers(
 
 
 
+
+
+
+
       t("tailorReport"),
+
+
+
+
 
 
 
@@ -433,7 +864,19 @@ setUsers(
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -445,7 +888,15 @@ setUsers(
 
 
 
+
+
+
+
     tabs.push([
+
+
+
+
 
 
 
@@ -453,7 +904,15 @@ setUsers(
 
 
 
+
+
+
+
       t("checklistReport"),
+
+
+
+
 
 
 
@@ -461,7 +920,19 @@ setUsers(
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -473,7 +944,15 @@ setUsers(
 
 
 
+
+
+
+
     tabs.push([
+
+
+
+
 
 
 
@@ -481,7 +960,15 @@ setUsers(
 
 
 
+
+
+
+
       "Scorecard",
+
+
+
+
 
 
 
@@ -489,7 +976,19 @@ setUsers(
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -501,7 +1000,15 @@ setUsers(
 
 
 
+
+
+
+
     tabs.push([
+
+
+
+
 
 
 
@@ -509,11 +1016,23 @@ setUsers(
 
 
 
+
+
+
+
       "Manage Data",
 
 
 
+
+
+
+
     ]);
+
+
+
+
 
 
 
@@ -525,15 +1044,35 @@ setUsers(
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="p-4 space-y-4">
 
 
 
-      <h2 className="text-xl font-bold text-slate-900">
+
+    \<div className="p-4 space-y-4">
+
+
+
+
+
+
+
+      \<h2 className="text-xl font-bold text-slate-900">
+
+
+
+
 
 
 
@@ -541,7 +1080,11 @@ setUsers(
 
 
 
-      </h2>
+
+
+
+
+      \</h2>
 
 
 
@@ -549,7 +1092,19 @@ setUsers(
 
 
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+
+
+
+
+
+
+
+
+      \<div className="flex gap-2 overflow-x-auto no-scrollbar">
+
+
+
+
 
 
 
@@ -557,7 +1112,15 @@ setUsers(
 
 
 
-          <button
+
+
+
+
+          \<button
+
+
+
+
 
 
 
@@ -565,11 +1128,23 @@ setUsers(
 
 
 
+
+
+
+
             onClick={() => setTab(key)}
 
 
 
-            className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap font-medium ${
+
+
+
+
+            className={\`text-xs px-3 py-1.5 rounded-full whitespace-nowrap font-medium ${
+
+
+
+
 
 
 
@@ -577,7 +1152,15 @@ setUsers(
 
 
 
+
+
+
+
                 ? "bg-slate-900 text-white"
+
+
+
+
 
 
 
@@ -585,7 +1168,15 @@ setUsers(
 
 
 
-            }`}
+
+
+
+
+            }\`}
+
+
+
+
 
 
 
@@ -593,11 +1184,23 @@ setUsers(
 
 
 
+
+
+
+
             {label}
 
 
 
-          </button>
+
+
+
+
+          \</button>
+
+
+
+
 
 
 
@@ -605,7 +1208,19 @@ setUsers(
 
 
 
-      </div>
+
+
+
+
+      \</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -617,11 +1232,27 @@ setUsers(
 
 
 
-        <TaskReport users={users} />
+
+
+
+
+        \<TaskReport users={users} />
+
+
+
+
 
 
 
       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -633,11 +1264,27 @@ setUsers(
 
 
 
-        <NotDoneReport users={users} />
+
+
+
+
+        \<NotDoneReport users={users} />
+
+
+
+
 
 
 
       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -649,11 +1296,27 @@ setUsers(
 
 
 
-        <TailorReport />
+
+
+
+
+        \<TailorReport />
+
+
+
+
 
 
 
       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -665,7 +1328,15 @@ setUsers(
 
 
 
-        <ChecklistReport users={users} />
+
+
+
+
+        \<ChecklistReport users={users} />
+
+
+
+
 
 
 
@@ -677,7 +1348,19 @@ setUsers(
 
 
 
+
+
+
+
+
+
+
+
       {tab === "scorecard" &&
+
+
+
+
 
 
 
@@ -685,12 +1368,25 @@ setUsers(
 
 
 
-          <Scorecard users={users} />
+
+
+
+
+          \<Scorecard users={users} />
+
+
+
+
 
 
 
         )}
+
       {tab === "data" &&
+
+
+
+
 
 
 
@@ -698,7 +1394,15 @@ setUsers(
 
 
 
-          <DeletePriorData />
+
+
+
+
+          \<DeletePriorData />
+
+
+
+
 
 
 
@@ -706,11 +1410,23 @@ setUsers(
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -722,7 +1438,19 @@ setUsers(
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -730,7 +1458,19 @@ setUsers(
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -742,7 +1482,15 @@ function storeQuery() {
 
 
 
+
+
+
+
   const storeId =
+
+
+
+
 
 
 
@@ -750,11 +1498,27 @@ function storeQuery() {
 
 
 
+
+
+
+
       "klassic_store"
 
 
 
+
+
+
+
     );
+
+
+
+
+
+
+
+
 
 
 
@@ -766,7 +1530,15 @@ function storeQuery() {
 
 
 
+
+
+
+
     storeId !== "all"
+
+
+
+
 
 
 
@@ -774,7 +1546,15 @@ function storeQuery() {
 
 
 
+
+
+
+
         store_id: storeId,
+
+
+
+
 
 
 
@@ -782,11 +1562,27 @@ function storeQuery() {
 
 
 
+
+
+
+
     : {};
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -798,7 +1594,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
   entity,
+
+
+
+
 
 
 
@@ -806,11 +1610,27 @@ async function reportAggregate(
 
 
 
+
+
+
+
 ) {
 
 
 
+
+
+
+
   const query = new URLSearchParams();
+
+
+
+
+
+
+
+
 
 
 
@@ -826,7 +1646,19 @@ async function reportAggregate(
 
 
 
+
+
+
+
+
+
+
+
   Object.entries(params).forEach(
+
+
+
+
 
 
 
@@ -834,7 +1666,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
       if (
+
+
+
+
 
 
 
@@ -842,7 +1682,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
         value === null
+
+
+
+
 
 
 
@@ -850,11 +1698,27 @@ async function reportAggregate(
 
 
 
+
+
+
+
         return;
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -866,7 +1730,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
         typeof value === "object"
+
+
+
+
 
 
 
@@ -874,11 +1746,23 @@ async function reportAggregate(
 
 
 
+
+
+
+
         query.set(
 
 
 
+
+
+
+
           key,
+
+
+
+
 
 
 
@@ -886,7 +1770,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -894,7 +1786,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
         query.set(
+
+
+
+
 
 
 
@@ -902,7 +1802,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
           String(value)
+
+
+
+
 
 
 
@@ -910,7 +1818,15 @@ async function reportAggregate(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -918,7 +1834,19 @@ async function reportAggregate(
 
 
 
+
+
+
+
   );
+
+
+
+
+
+
+
+
 
 
 
@@ -930,11 +1858,23 @@ async function reportAggregate(
 
 
 
+
+
+
+
     await apiFetch(
 
 
 
-      `/api/reports/aggregate?${query.toString()}`
+
+
+
+
+      \`/api/reports/aggregate?${query.toString()}\`
+
+
+
+
 
 
 
@@ -946,7 +1886,19 @@ async function reportAggregate(
 
 
 
+
+
+
+
+
+
+
+
   return response;
+
+
+
+
 
 
 
@@ -958,7 +1910,19 @@ async function reportAggregate(
 
 
 
+
+
+
+
+
+
+
+
 async function reportList(
+
+
+
+
 
 
 
@@ -966,7 +1930,15 @@ async function reportList(
 
 
 
+
+
+
+
   params = {}
+
+
+
+
 
 
 
@@ -974,7 +1946,19 @@ async function reportList(
 
 
 
+
+
+
+
   const query = new URLSearchParams();
+
+
+
+
+
+
+
+
 
 
 
@@ -990,7 +1974,19 @@ async function reportList(
 
 
 
+
+
+
+
+
+
+
+
   Object.entries(params).forEach(
+
+
+
+
 
 
 
@@ -998,7 +1994,15 @@ async function reportList(
 
 
 
+
+
+
+
       if (
+
+
+
+
 
 
 
@@ -1006,7 +2010,15 @@ async function reportList(
 
 
 
+
+
+
+
         value === null
+
+
+
+
 
 
 
@@ -1014,11 +2026,27 @@ async function reportList(
 
 
 
+
+
+
+
         return;
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -1030,7 +2058,15 @@ async function reportList(
 
 
 
+
+
+
+
         typeof value === "object"
+
+
+
+
 
 
 
@@ -1038,11 +2074,23 @@ async function reportList(
 
 
 
+
+
+
+
         query.set(
 
 
 
+
+
+
+
           key,
+
+
+
+
 
 
 
@@ -1050,7 +2098,15 @@ async function reportList(
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -1058,7 +2114,15 @@ async function reportList(
 
 
 
+
+
+
+
         query.set(
+
+
+
+
 
 
 
@@ -1066,7 +2130,15 @@ async function reportList(
 
 
 
+
+
+
+
           String(value)
+
+
+
+
 
 
 
@@ -1074,7 +2146,15 @@ async function reportList(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1082,7 +2162,19 @@ async function reportList(
 
 
 
+
+
+
+
   );
+
+
+
+
+
+
+
+
 
 
 
@@ -1094,11 +2186,23 @@ async function reportList(
 
 
 
-    `/api/reports/list?${query.toString()}`
+
+
+
+
+    \`/api/reports/list?${query.toString()}\`
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -1110,7 +2214,19 @@ async function reportList(
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -1118,7 +2234,19 @@ async function reportList(
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -1130,7 +2258,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
   const [rows, setRows] =
+
+
+
+
 
 
 
@@ -1142,7 +2278,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
   const [loading, setLoading] =
+
+
+
+
 
 
 
@@ -1154,7 +2302,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
 
 
 
@@ -1162,7 +2322,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       try {
+
+
+
+
 
 
 
@@ -1174,7 +2342,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         const baseQuery = {
+
+
+
+
 
 
 
@@ -1182,7 +2362,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           active: {
+
+
+
+
 
 
 
@@ -1190,7 +2378,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           },
+
+
+
+
 
 
 
@@ -1202,7 +2398,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         const [
+
+
+
+
 
 
 
@@ -1210,7 +2418,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           completedAgg,
+
+
+
+
 
 
 
@@ -1218,7 +2434,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           escAgg,
+
+
+
+
 
 
 
@@ -1226,7 +2450,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -1234,7 +2466,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             {
+
+
+
+
 
 
 
@@ -1242,7 +2482,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               groupBy:
+
+
+
+
 
 
 
@@ -1250,7 +2498,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               count: true,
+
+
+
+
 
 
 
@@ -1258,7 +2514,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -1270,7 +2534,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -1278,7 +2554,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             {
+
+
+
+
 
 
 
@@ -1286,7 +2570,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 ...baseQuery,
+
+
+
+
 
 
 
@@ -1294,7 +2586,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                   $in: [
+
+
+
+
 
 
 
@@ -1302,7 +2602,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                     "Approved",
+
+
+
+
 
 
 
@@ -1310,7 +2618,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 },
+
+
+
+
 
 
 
@@ -1318,7 +2634,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               groupBy:
+
+
+
+
 
 
 
@@ -1326,7 +2650,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               count: true,
+
+
+
+
 
 
 
@@ -1334,7 +2666,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 "variance_minutes",
+
+
+
+
 
 
 
@@ -1342,7 +2682,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -1354,7 +2702,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -1362,7 +2722,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             {
+
+
+
+
 
 
 
@@ -1370,7 +2738,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 ...baseQuery,
+
+
+
+
 
 
 
@@ -1378,7 +2754,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               },
+
+
+
+
 
 
 
@@ -1386,7 +2770,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 "assigned_to_id",
+
+
+
+
 
 
 
@@ -1394,7 +2786,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               limit: 100,
+
+
+
+
 
 
 
@@ -1402,7 +2802,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           ),
+
+
+
+
+
+
+
+
 
 
 
@@ -1414,7 +2826,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             "Task",
+
+
+
+
 
 
 
@@ -1422,7 +2842,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               query: {
+
+
+
+
 
 
 
@@ -1430,7 +2858,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 variance_minutes: {
+
+
+
+
 
 
 
@@ -1438,7 +2874,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 },
+
+
+
+
 
 
 
@@ -1446,7 +2890,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               groupBy:
+
+
+
+
 
 
 
@@ -1454,7 +2906,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               count: true,
+
+
+
+
 
 
 
@@ -1462,7 +2922,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -1470,7 +2938,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         ]);
+
+
+
+
+
+
+
+
 
 
 
@@ -1486,7 +2966,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         (users || []).forEach(
+
+
+
+
 
 
 
@@ -1494,7 +2986,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             nameMap[
+
+
+
+
 
 
 
@@ -1502,7 +3002,15 @@ function Scorecard({ users }) {
 
 
 
-                user._id
+
+
+
+
+                user.\_id
+
+
+
+
 
 
 
@@ -1510,7 +3018,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               user.name ||
+
+
+
+
 
 
 
@@ -1518,7 +3034,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               user.email;
+
+
+
+
 
 
 
@@ -1526,7 +3050,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         );
+
+
+
+
+
+
+
+
 
 
 
@@ -1538,11 +3074,23 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         const varianceMap = {};
 
 
 
+
+
+
+
         const onTimeMap = {};
+
+
+
+
 
 
 
@@ -1554,7 +3102,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -1562,7 +3122,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         ).forEach((row) => {
+
+
+
+
 
 
 
@@ -1570,11 +3138,27 @@ function Scorecard({ users }) {
 
 
 
-            row.assigned_to_id
 
 
 
-          ] = row.count;
+
+            row\.assigned_to_id
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
+
+
+
+
 
 
 
@@ -1586,7 +3170,15 @@ function Scorecard({ users }) {
 
 
 
-            row.assigned_to_id
+
+
+
+
+            row\.assigned_to_id
+
+
+
+
 
 
 
@@ -1594,7 +3186,15 @@ function Scorecard({ users }) {
 
 
 
-            row.avg_variance_minutes;
+
+
+
+
+            row\.avg_variance_minutes;
+
+
+
+
 
 
 
@@ -1606,7 +3206,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -1614,7 +3226,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         ).forEach((row) => {
+
+
+
+
 
 
 
@@ -1622,15 +3242,35 @@ function Scorecard({ users }) {
 
 
 
-            row.assigned_to_id
 
 
 
-          ] = row.count;
+
+            row\.assigned_to_id
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
 
 
 
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -1642,7 +3282,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           escAgg.rows || []
+
+
+
+
 
 
 
@@ -1650,19 +3298,43 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           escalationMap[
 
 
 
-            row.assigned_to_id
 
 
 
-          ] = row.count;
+
+            row\.assigned_to_id
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
 
 
 
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -1674,7 +3346,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           (
+
+
+
+
 
 
 
@@ -1682,7 +3362,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           )
+
+
+
+
 
 
 
@@ -1690,11 +3378,27 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               const uid =
 
 
 
-                row.assigned_to_id;
+
+
+
+
+                row\.assigned_to_id;
+
+
+
+
+
+
+
+
 
 
 
@@ -1706,7 +3410,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 completedMap[
+
+
+
+
 
 
 
@@ -1714,7 +3426,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 ] || 0;
+
+
+
+
+
+
+
+
 
 
 
@@ -1726,7 +3450,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 onTimeMap[
+
+
+
+
 
 
 
@@ -1734,7 +3466,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 ] || 0;
+
+
+
+
+
+
+
+
 
 
 
@@ -1746,11 +3490,23 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 escalationMap[
 
 
 
+
+
+
+
                   uid
+
+
+
+
 
 
 
@@ -1762,7 +3518,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
               const variance =
+
+
+
+
 
 
 
@@ -1770,7 +3538,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                   uid
+
+
+
+
 
 
 
@@ -1782,7 +3558,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
               const onTimePct =
+
+
+
+
 
 
 
@@ -1790,7 +3578,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                   ? Math.round(
+
+
+
+
 
 
 
@@ -1798,7 +3594,15 @@ function Scorecard({ users }) {
 
 
 
-                        completed) *
+
+
+
+
+                        completed) \*
+
+
+
+
 
 
 
@@ -1806,7 +3610,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                     )
+
+
+
+
 
 
 
@@ -1818,7 +3630,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
               return {
+
+
+
+
 
 
 
@@ -1826,7 +3650,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 name:
+
+
+
+
 
 
 
@@ -1834,7 +3666,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                   "Unassigned",
+
+
+
+
 
 
 
@@ -1842,7 +3682,15 @@ function Scorecard({ users }) {
 
 
 
-                  row.count,
+
+
+
+
+                  row\.count,
+
+
+
+
 
 
 
@@ -1850,7 +3698,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 onTime,
+
+
+
+
 
 
 
@@ -1858,7 +3714,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
                 onTimePct,
+
+
+
+
 
 
 
@@ -1866,7 +3730,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
               };
+
+
+
+
 
 
 
@@ -1874,11 +3746,23 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             .filter(
 
 
 
-              (row) => row.uid
+
+
+
+
+              (row) => row\.uid
+
+
+
+
 
 
 
@@ -1890,7 +3774,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         setRows(output);
+
+
+
+
 
 
 
@@ -1898,7 +3794,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         console.error(
+
+
+
+
 
 
 
@@ -1906,7 +3810,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
           error
+
+
+
+
 
 
 
@@ -1914,7 +3826,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       } finally {
+
+
+
+
 
 
 
@@ -1922,11 +3842,23 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       }
 
 
 
+
+
+
+
     })();
+
+
+
+
 
 
 
@@ -1938,7 +3870,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
   const fmtVariance = (
+
+
+
+
 
 
 
@@ -1946,11 +3890,23 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
   ) => {
 
 
 
+
+
+
+
     if (
+
+
+
+
 
 
 
@@ -1958,7 +3914,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       Number.isNaN(
+
+
+
+
 
 
 
@@ -1966,7 +3930,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       )
+
+
+
+
 
 
 
@@ -1974,11 +3946,27 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       return "—";
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -1990,7 +3978,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       Math.abs(value) < 1
+
+
+
+
 
 
 
@@ -1998,11 +3994,27 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       return "On time";
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -2014,6 +4026,10 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
       Math.abs(value) / 60;
 
 
@@ -2022,7 +4038,19 @@ function Scorecard({ users }) {
 
 
 
-    return `${hours.toFixed(
+
+
+
+
+
+
+
+
+    return \`${hours.toFixed(
+
+
+
+
 
 
 
@@ -2030,7 +4058,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
     )}h ${
+
+
+
+
 
 
 
@@ -2038,7 +4074,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         ? "late"
+
+
+
+
 
 
 
@@ -2046,7 +4090,15 @@ function Scorecard({ users }) {
 
 
 
-    }`;
+
+
+
+
+    }\`;
+
+
+
+
 
 
 
@@ -2058,15 +4110,35 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="space-y-3">
 
 
 
-      <p className="text-xs text-slate-500">
+
+    \<div className="space-y-3">
+
+
+
+
+
+
+
+      \<p className="text-xs text-slate-500">
+
+
+
+
 
 
 
@@ -2074,7 +4146,15 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         escalations (late tasks)
+
+
+
+
 
 
 
@@ -2082,11 +4162,27 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
         manager.
 
 
 
-      </p>
+
+
+
+
+      \</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -2098,7 +4194,15 @@ function Scorecard({ users }) {
 
 
 
-        <div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -2106,7 +4210,15 @@ function Scorecard({ users }) {
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -2114,7 +4226,15 @@ function Scorecard({ users }) {
 
 
 
-        <p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -2122,7 +4242,15 @@ function Scorecard({ users }) {
 
 
 
-        </p>
+
+
+
+
+        \</p>
+
+
+
+
 
 
 
@@ -2130,7 +4258,15 @@ function Scorecard({ users }) {
 
 
 
-        <div className="space-y-2">
+
+
+
+
+        \<div className="space-y-2">
+
+
+
+
 
 
 
@@ -2138,11 +4274,23 @@ function Scorecard({ users }) {
 
 
 
-            <div
 
 
 
-              key={row.uid}
+
+            \<div
+
+
+
+
+
+
+
+              key={row\.uid}
+
+
+
+
 
 
 
@@ -2150,23 +4298,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
             >
 
 
 
-              <div className="flex items-center justify-between mb-2">
 
 
 
-                <span className="text-sm font-semibold text-slate-800">
 
-
-
-                  {row.name}
-
-
-
-                </span>
+              \<div className="flex items-center justify-between mb-2">
 
 
 
@@ -2174,19 +4318,7 @@ function Scorecard({ users }) {
 
 
 
-                <span className="text-[11px] text-slate-400">
-
-
-
-                  {row.total} task(s)
-
-
-
-                </span>
-
-
-
-              </div>
+                \<span className="text-sm font-semibold text-slate-800">
 
 
 
@@ -2194,23 +4326,7 @@ function Scorecard({ users }) {
 
 
 
-              <div className="grid grid-cols-3 gap-2 text-center">
-
-
-
-                <div>
-
-
-
-                  <p className="text-lg font-bold text-green-700">
-
-
-
-                    {row.onTimePct}%
-
-
-
-                  </p>
+                  {row\.name}
 
 
 
@@ -2218,7 +4334,115 @@ function Scorecard({ users }) {
 
 
 
-                  <p className="text-[10px] text-slate-500">
+                \</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                \<span className="text-[11px] text-slate-400">
+
+
+
+
+
+
+
+                  {row\.total} task(s)
+
+
+
+
+
+
+
+                \</span>
+
+
+
+
+
+
+
+              \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              \<div className="grid grid-cols-3 gap-2 text-center">
+
+
+
+
+
+
+
+                \<div>
+
+
+
+
+
+
+
+                  \<p className="text-lg font-bold text-green-700">
+
+
+
+
+
+
+
+                    {row\.onTimePct}%
+
+
+
+
+
+
+
+                  \</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  \<p className="text-[10px] text-slate-500">
+
+
+
+
 
 
 
@@ -2226,31 +4450,11 @@ function Scorecard({ users }) {
 
 
 
-                  </p>
-
-
-
-                </div>
 
 
 
 
-
-
-
-                <div>
-
-
-
-                  <p className="text-lg font-bold text-red-600">
-
-
-
-                    {row.escalation}
-
-
-
-                  </p>
+                  \</p>
 
 
 
@@ -2258,7 +4462,67 @@ function Scorecard({ users }) {
 
 
 
-                  <p className="text-[10px] text-slate-500">
+                \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                \<div>
+
+
+
+
+
+
+
+                  \<p className="text-lg font-bold text-red-600">
+
+
+
+
+
+
+
+                    {row\.escalation}
+
+
+
+
+
+
+
+                  \</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  \<p className="text-[10px] text-slate-500">
+
+
+
+
 
 
 
@@ -2266,23 +4530,47 @@ function Scorecard({ users }) {
 
 
 
-                  </p>
-
-
-
-                </div>
 
 
 
 
+                  \</p>
 
 
 
-                <div>
 
 
 
-                  <p className="text-sm font-bold text-slate-800 leading-6">
+
+                \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                \<div>
+
+
+
+
+
+
+
+                  \<p className="text-sm font-bold text-slate-800 leading-6">
+
+
+
+
 
 
 
@@ -2290,7 +4578,15 @@ function Scorecard({ users }) {
 
 
 
-                      row.variance
+
+
+
+
+                      row\.variance
+
+
+
+
 
 
 
@@ -2298,7 +4594,11 @@ function Scorecard({ users }) {
 
 
 
-                  </p>
+
+
+
+
+                  \</p>
 
 
 
@@ -2306,7 +4606,19 @@ function Scorecard({ users }) {
 
 
 
-                  <p className="text-[10px] text-slate-500">
+
+
+
+
+
+
+
+
+                  \<p className="text-[10px] text-slate-500">
+
+
+
+
 
 
 
@@ -2314,15 +4626,11 @@ function Scorecard({ users }) {
 
 
 
-                  </p>
 
 
 
-                </div>
 
-
-
-              </div>
+                  \</p>
 
 
 
@@ -2330,11 +4638,43 @@ function Scorecard({ users }) {
 
 
 
-              <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                \</div>
 
 
 
-                <span>
+
+
+
+
+              \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              \<div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+
+
+
+
+
+
+
+                \<span>
+
+
+
+
 
 
 
@@ -2342,19 +4682,39 @@ function Scorecard({ users }) {
 
 
 
-                  {row.completed}
-
-
-
-                </span>
 
 
 
 
+                  {row\.completed}
 
 
 
-                <span>
+
+
+
+
+                \</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                \<span>
+
+
+
+
 
 
 
@@ -2362,19 +4722,39 @@ function Scorecard({ users }) {
 
 
 
-                  {row.onTime}
 
 
 
-                </span>
+
+                  {row\.onTime}
 
 
 
-              </div>
 
 
 
-            </div>
+
+                \</span>
+
+
+
+
+
+
+
+              \</div>
+
+
+
+
+
+
+
+            \</div>
+
+
+
+
 
 
 
@@ -2382,7 +4762,15 @@ function Scorecard({ users }) {
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -2390,11 +4778,23 @@ function Scorecard({ users }) {
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -2406,7 +4806,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -2414,7 +4826,19 @@ function Scorecard({ users }) {
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -2426,7 +4850,15 @@ function PeriodToggle({
 
 
 
+
+
+
+
   unit,
+
+
+
+
 
 
 
@@ -2434,7 +4866,15 @@ function PeriodToggle({
 
 
 
+
+
+
+
 }) {
+
+
+
+
 
 
 
@@ -2446,11 +4886,27 @@ function PeriodToggle({
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="flex gap-2">
+
+
+
+
+    \<div className="flex gap-2">
+
+
+
+
 
 
 
@@ -2458,7 +4914,15 @@ function PeriodToggle({
 
 
 
+
+
+
+
         ["day", t("daily")],
+
+
+
+
 
 
 
@@ -2466,7 +4930,15 @@ function PeriodToggle({
 
 
 
+
+
+
+
       ].map(
+
+
+
+
 
 
 
@@ -2474,7 +4946,15 @@ function PeriodToggle({
 
 
 
-          <button
+
+
+
+
+          \<button
+
+
+
+
 
 
 
@@ -2482,7 +4962,15 @@ function PeriodToggle({
 
 
 
+
+
+
+
             onClick={() =>
+
+
+
+
 
 
 
@@ -2490,11 +4978,23 @@ function PeriodToggle({
 
 
 
+
+
+
+
             }
 
 
 
-            className={`text-xs px-3 py-1.5 rounded-full font-medium ${
+
+
+
+
+            className={\`text-xs px-3 py-1.5 rounded-full font-medium ${
+
+
+
+
 
 
 
@@ -2502,7 +5002,15 @@ function PeriodToggle({
 
 
 
+
+
+
+
                 ? "bg-slate-900 text-white"
+
+
+
+
 
 
 
@@ -2510,7 +5018,15 @@ function PeriodToggle({
 
 
 
-            }`}
+
+
+
+
+            }\`}
+
+
+
+
 
 
 
@@ -2518,11 +5034,23 @@ function PeriodToggle({
 
 
 
+
+
+
+
             {label}
 
 
 
-          </button>
+
+
+
+
+          \</button>
+
+
+
+
 
 
 
@@ -2530,11 +5058,23 @@ function PeriodToggle({
 
 
 
+
+
+
+
       )}
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
@@ -2542,7 +5082,19 @@ function PeriodToggle({
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2554,7 +5106,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
   users,
+
+
+
+
 
 
 
@@ -2562,7 +5122,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
   onChange,
+
+
+
+
 
 
 
@@ -2570,11 +5138,23 @@ function ManagerFilter({
 
 
 
+
+
+
+
   return (
 
 
 
-    <select
+
+
+
+
+    \<select
+
+
+
+
 
 
 
@@ -2582,7 +5162,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
       onChange={(event) =>
+
+
+
+
 
 
 
@@ -2590,7 +5178,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
           event.target.value
+
+
+
+
 
 
 
@@ -2598,7 +5194,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -2606,11 +5210,23 @@ function ManagerFilter({
 
 
 
+
+
+
+
     >
 
 
 
-      <option value="all">
+
+
+
+
+      \<option value="all">
+
+
+
+
 
 
 
@@ -2618,7 +5234,19 @@ function ManagerFilter({
 
 
 
-      </option>
+
+
+
+
+      \</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -2630,7 +5258,15 @@ function ManagerFilter({
 
 
 
-        <option
+
+
+
+
+        \<option
+
+
+
+
 
 
 
@@ -2638,15 +5274,31 @@ function ManagerFilter({
 
 
 
+
+
+
+
             user.id ||
 
 
 
-            user._id
+
+
+
+
+            user.\_id
+
+
+
+
 
 
 
           }
+
+
+
+
 
 
 
@@ -2654,11 +5306,23 @@ function ManagerFilter({
 
 
 
+
+
+
+
             user.id ||
 
 
 
-            user._id
+
+
+
+
+            user.\_id
+
+
+
+
 
 
 
@@ -2666,7 +5330,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
         >
+
+
+
+
 
 
 
@@ -2674,7 +5346,15 @@ function ManagerFilter({
 
 
 
+
+
+
+
             user.full_name ||
+
+
+
+
 
 
 
@@ -2682,7 +5362,15 @@ function ManagerFilter({
 
 
 
-        </option>
+
+
+
+
+        \</option>
+
+
+
+
 
 
 
@@ -2690,11 +5378,23 @@ function ManagerFilter({
 
 
 
-    </select>
+
+
+
+
+    \</select>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -2706,7 +5406,19 @@ function ManagerFilter({
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -2714,7 +5426,19 @@ function ManagerFilter({
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -2726,7 +5450,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
   const { t } = useLang();
+
+
+
+
+
+
+
+
 
 
 
@@ -2738,7 +5474,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
     useState("day");
+
+
+
+
+
+
+
+
 
 
 
@@ -2750,7 +5498,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
     useState([]);
+
+
+
+
+
+
+
+
 
 
 
@@ -2762,7 +5522,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
     useState(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -2774,7 +5546,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
     useState("all");
+
+
+
+
+
+
+
+
 
 
 
@@ -2786,7 +5570,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
     (async () => {
+
+
+
+
 
 
 
@@ -2798,7 +5590,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
       try {
+
+
+
+
 
 
 
@@ -2806,7 +5610,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           ...storeQuery(),
+
+
+
+
 
 
 
@@ -2814,11 +5626,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
             $ne: true,
 
 
 
+
+
+
+
           },
+
+
+
+
 
 
 
@@ -2830,7 +5654,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         if (
+
+
+
+
 
 
 
@@ -2838,7 +5674,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
         ) {
+
+
+
+
 
 
 
@@ -2846,7 +5690,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
             managerId;
+
+
+
+
 
 
 
@@ -2858,7 +5710,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         const [
+
+
+
+
 
 
 
@@ -2866,11 +5730,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           doneAgg,
 
 
 
-                  overdueAgg,
+
+
+
+
+                  overdueAgg,
+
+
+
+
 
 
 
@@ -2878,7 +5754,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -2886,7 +5770,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
             {
+
+
+
+
 
 
 
@@ -2894,11 +5786,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 ...baseQuery,
 
 
 
+
+
+
+
                 status: {
+
+
+
+
 
 
 
@@ -2906,11 +5810,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 },
 
 
 
+
+
+
+
               },
+
+
+
+
 
 
 
@@ -2918,7 +5834,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 field: "due_date",
+
+
+
+
 
 
 
@@ -2926,7 +5850,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               },
+
+
+
+
 
 
 
@@ -2934,7 +5866,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               limit: 60,
+
+
+
+
 
 
 
@@ -2942,7 +5882,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           ),
+
+
+
+
+
+
+
+
 
 
 
@@ -2954,7 +5906,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
             "Task",
+
+
+
+
 
 
 
@@ -2962,7 +5922,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               query: {
+
+
+
+
 
 
 
@@ -2970,7 +5938,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 status: {
+
+
+
+
 
 
 
@@ -2978,7 +5954,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                     "Done",
+
+
+
+
 
 
 
@@ -2986,7 +5970,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                   ],
+
+
+
+
 
 
 
@@ -2994,7 +5986,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               },
+
+
+
+
 
 
 
@@ -3002,7 +6002,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 field: "due_date",
+
+
+
+
 
 
 
@@ -3010,7 +6018,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               },
+
+
+
+
 
 
 
@@ -3018,7 +6034,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               limit: 60,
+
+
+
+
 
 
 
@@ -3026,37 +6050,79 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           ),
 
-          reportAggregate(
-            "Task",
-            {
-              query: {
-                ...baseQuery,
-                status: {
-                  $nin: [
-                    "Done",
-                    "Approved",
-                    "Cancelled",
-                    "Rejected",
-                  ],
-                },
-                due_date: {
-                  $lt: new Date().toISOString(),
-                },
-              },
-              dateBucket: {
-                field: "due_date",
-                unit,
-              },
-              count: true,
-              limit: 60,
-            }
-          ),
+
+
+          reportAggregate(
+
+            "Task",
+
+            {
+
+              query: {
+
+                ...baseQuery,
+
+                status: {
+
+                  $nin: [
+
+                    "Done",
+
+                    "Approved",
+
+                    "Cancelled",
+
+                    "Rejected",
+
+                  ],
+
+                },
+
+                due_date: {
+
+                  $lt: new Date().toISOString(),
+
+                },
+
+              },
+
+              dateBucket: {
+
+                field: "due_date",
+
+                unit,
+
+              },
+
+              count: true,
+
+              limit: 60,
+
+            }
+
+          ),
+
+
+
+
 
 
 
         ]);
+
+
+
+
+
+
+
+
 
 
 
@@ -3072,7 +6138,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -3080,7 +6158,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
         ).forEach((row) => {
+
+
+
+
 
 
 
@@ -3088,21 +6174,48 @@ function TaskReport({ users }) {
 
 
 
-            row.due_date
 
 
 
-          ] = row.count;
+
+            row\.due_date
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
 
 
 
         });
 
-        const overdueMap = {};
 
-        (overdueAgg.rows || []).forEach((row) => {
-          overdueMap[row.due_date] = row.count;
-        });
+
+        const overdueMap = {};
+
+
+
+        (overdueAgg.rows || []).forEach((row) => {
+
+          overdueMap[row\.due_date] = row\.count;
+
+        });
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3115,7 +6228,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           (totalAgg.rows || [])
+
+
+
+
 
 
 
@@ -3123,11 +6244,23 @@ function TaskReport({ users }) {
 
 
 
-              key: row.due_date,
 
 
 
-              count: row.count,
+
+              key: row\.due_date,
+
+
+
+
+
+
+
+              count: row\.count,
+
+
+
+
 
 
 
@@ -3135,11 +6268,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 doneMap[
 
 
 
-                  row.due_date
+
+
+
+
+                  row\.due_date
+
+
+
+
 
 
 
@@ -3147,7 +6292,15 @@ function TaskReport({ users }) {
 
 
 
-              missed: overdueMap[row.due_date] || 0,
+
+
+
+
+              missed: overdueMap[row\.due_date] || 0,
+
+
+
+
 
 
 
@@ -3155,7 +6308,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
             .sort((a, b) =>
+
+
+
+
 
 
 
@@ -3163,7 +6324,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 a.key
+
+
+
+
 
 
 
@@ -3171,11 +6340,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
             )
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -3183,7 +6364,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
         console.error(
+
+
+
+
 
 
 
@@ -3191,7 +6380,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           error
+
+
+
+
 
 
 
@@ -3199,7 +6396,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
       } finally {
+
+
+
+
 
 
 
@@ -3207,11 +6412,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
       }
 
 
 
+
+
+
+
     })();
+
+
+
+
 
 
 
@@ -3223,19 +6440,43 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="space-y-3">
 
 
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+
+    \<div className="space-y-3">
 
 
 
-        <PeriodToggle
+
+
+
+
+      \<div className="flex items-center justify-between gap-2 flex-wrap">
+
+
+
+
+
+
+
+        \<PeriodToggle
+
+
+
+
 
 
 
@@ -3243,7 +6484,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           setUnit={setUnit}
+
+
+
+
 
 
 
@@ -3255,7 +6504,19 @@ function TaskReport({ users }) {
 
 
 
-        <ManagerFilter
+
+
+
+
+
+
+
+
+        \<ManagerFilter
+
+
+
+
 
 
 
@@ -3263,7 +6524,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           value={managerId}
+
+
+
+
 
 
 
@@ -3271,11 +6540,27 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
         />
 
 
 
-      </div>
+
+
+
+
+      \</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -3287,7 +6572,15 @@ function TaskReport({ users }) {
 
 
 
-        <div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -3295,7 +6588,15 @@ function TaskReport({ users }) {
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -3303,7 +6604,15 @@ function TaskReport({ users }) {
 
 
 
-        <p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -3311,7 +6620,15 @@ function TaskReport({ users }) {
 
 
 
-        </p>
+
+
+
+
+        \</p>
+
+
+
+
 
 
 
@@ -3319,7 +6636,15 @@ function TaskReport({ users }) {
 
 
 
-        <div className="space-y-2">
+
+
+
+
+        \<div className="space-y-2">
+
+
+
+
 
 
 
@@ -3327,7 +6652,15 @@ function TaskReport({ users }) {
 
 
 
-            const pct = row.count
+
+
+
+
+            const pct = row\.count
+
+
+
+
 
 
 
@@ -3335,11 +6668,23 @@ function TaskReport({ users }) {
 
 
 
-                  (row.done /
 
 
 
-                    row.count) *
+
+                  (row\.done /
+
+
+
+
+
+
+
+                    row\.count) \*
+
+
+
+
 
 
 
@@ -3347,7 +6692,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 )
+
+
+
+
 
 
 
@@ -3359,7 +6712,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
             const label =
+
+
+
+
 
 
 
@@ -3367,11 +6732,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                 ? new Date(
 
 
 
-                    row.key
+
+
+
+
+                    row\.key
+
+
+
+
 
 
 
@@ -3379,7 +6756,15 @@ function TaskReport({ users }) {
 
 
 
-                : row.key.slice(
+
+
+
+
+                : row\.key.slice(
+
+
+
+
 
 
 
@@ -3387,7 +6772,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                     7
+
+
+
+
 
 
 
@@ -3399,15 +6792,35 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
             return (
 
 
 
-              <div
 
 
 
-                key={row.key}
+
+              \<div
+
+
+
+
+
+
+
+                key={row\.key}
+
+
+
+
 
 
 
@@ -3415,15 +6828,31 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
               >
 
 
 
-                <div className="flex items-center justify-between mb-2">
 
 
 
-                  <span className="text-sm font-semibold text-slate-800">
+
+                \<div className="flex items-center justify-between mb-2">
+
+
+
+
+
+
+
+                  \<span className="text-sm font-semibold text-slate-800">
+
+
+
+
 
 
 
@@ -3431,7 +6860,11 @@ function TaskReport({ users }) {
 
 
 
-                  </span>
+
+
+
+
+                  \</span>
 
 
 
@@ -3439,15 +6872,6 @@ function TaskReport({ users }) {
 
 
 
-                  <span className="text-xs text-slate-500">
-
-
-
-                    {row.done}/
-
-
-
-                    {row.count}
 
 
 
@@ -3455,7 +6879,44 @@ function TaskReport({ users }) {
 
 
 
-                    {row.missed >
+
+                  \<span className="text-xs text-slate-500">
+
+
+
+
+
+
+
+                    {row\.done}/
+
+
+
+
+
+
+
+                    {row\.count}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    {row\.missed >
+
+
+
+
 
 
 
@@ -3463,7 +6924,15 @@ function TaskReport({ users }) {
 
 
 
-                      ? ` · ${row.missed} missed`
+
+
+
+
+                      ? \` · ${row\.missed} missed\`
+
+
+
+
 
 
 
@@ -3471,23 +6940,47 @@ function TaskReport({ users }) {
 
 
 
-                  </span>
-
-
-
-                </div>
 
 
 
 
+                  \</span>
 
 
 
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
 
 
 
-                  <div
+
+                \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                \<div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+
+
+
+
+
+
+
+                  \<div
+
+
+
+
 
 
 
@@ -3495,11 +6988,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                     style={{
 
 
 
-                      width: `${pct}%`,
+
+
+
+
+                      width: \`${pct}%\`,
+
+
+
+
 
 
 
@@ -3507,11 +7012,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                   />
 
 
 
-                </div>
+
+
+
+
+                \</div>
 
 
 
@@ -3519,11 +7032,27 @@ function TaskReport({ users }) {
 
 
 
-                <p className="text-[11px] mt-1">
 
 
 
-                  {row.missed >
+
+
+
+
+
+                \<p className="text-[11px] mt-1">
+
+
+
+
+
+
+
+                  {row\.missed >
+
+
+
+
 
 
 
@@ -3531,15 +7060,31 @@ function TaskReport({ users }) {
 
 
 
-                    <span className="text-red-600 font-medium">
 
 
 
-                      {row.missed} not done
+
+                    \<span className="text-red-600 font-medium">
 
 
 
-                    </span>
+
+
+
+
+                      {row\.missed} not done
+
+
+
+
+
+
+
+                    \</span>
+
+
+
+
 
 
 
@@ -3547,7 +7092,15 @@ function TaskReport({ users }) {
 
 
 
-                    <span className="text-slate-400">
+
+
+
+
+                    \<span className="text-slate-400">
+
+
+
+
 
 
 
@@ -3555,7 +7108,15 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                         "completed"
+
+
+
+
 
 
 
@@ -3563,11 +7124,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
                       : {pct}%
 
 
 
-                    </span>
+
+
+
+
+                    \</span>
+
+
+
+
 
 
 
@@ -3575,11 +7148,23 @@ function TaskReport({ users }) {
 
 
 
-                </p>
 
 
 
-              </div>
+
+                \</p>
+
+
+
+
+
+
+
+              \</div>
+
+
+
+
 
 
 
@@ -3587,11 +7172,23 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
           })}
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -3599,11 +7196,23 @@ function TaskReport({ users }) {
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -3615,7 +7224,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -3623,7 +7244,19 @@ function TaskReport({ users }) {
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -3635,7 +7268,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
   users,
+
+
+
+
 
 
 
@@ -3643,7 +7284,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
   const [rows, setRows] =
+
+
+
+
 
 
 
@@ -3655,7 +7304,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
   const [loading, setLoading] =
+
+
+
+
 
 
 
@@ -3667,7 +7328,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
   const [managerId, setManagerId] =
+
+
+
+
 
 
 
@@ -3679,11 +7352,27 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
 
 
 
+
+
+
+
     (async () => {
+
+
+
+
 
 
 
@@ -3695,11 +7384,27 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
       try {
 
 
 
+
+
+
+
         const query = {
+
+
+
+
 
 
 
@@ -3711,7 +7416,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
           active: {
+
+
+
+
 
 
 
@@ -3719,7 +7436,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
           },
+
+
+
+
+
+
+
+
 
 
 
@@ -3731,7 +7460,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             $nin: [
+
+
+
+
 
 
 
@@ -3739,7 +7476,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
               "Approved",
+
+
+
+
 
 
 
@@ -3747,7 +7492,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
               "Rejected",
+
+
+
+
 
 
 
@@ -3755,7 +7508,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
           },
+
+
+
+
+
+
+
+
 
 
 
@@ -3767,7 +7532,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             $lt:
+
+
+
+
 
 
 
@@ -3775,7 +7548,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
           },
+
+
+
+
 
 
 
@@ -3787,7 +7568,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
         if (
+
+
+
+
 
 
 
@@ -3795,7 +7588,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
         ) {
+
+
+
+
 
 
 
@@ -3803,7 +7604,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             managerId;
+
+
+
+
 
 
 
@@ -3815,7 +7624,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
         const response =
+
+
+
+
 
 
 
@@ -3823,7 +7644,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             "Task",
+
+
+
+
 
 
 
@@ -3831,7 +7660,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
               query,
+
+
+
+
 
 
 
@@ -3839,7 +7676,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
               limit: 100,
+
+
+
+
 
 
 
@@ -3847,7 +7692,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
           );
+
+
+
+
+
+
+
+
 
 
 
@@ -3863,7 +7720,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -3871,7 +7740,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
         ).forEach((user) => {
+
+
+
+
 
 
 
@@ -3879,11 +7756,23 @@ function NotDoneReport({
 
 
 
+
+
+
+
             user.id ||
 
 
 
-              user._id
+
+
+
+
+              user.\_id
+
+
+
+
 
 
 
@@ -3891,7 +7780,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             user.name ||
+
+
+
+
 
 
 
@@ -3899,7 +7796,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             user.email;
+
+
+
+
 
 
 
@@ -3911,7 +7816,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
         setRows(
+
+
+
+
 
 
 
@@ -3919,7 +7836,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
             response.items ||
+
+
+
+
 
 
 
@@ -3927,11 +7852,23 @@ function NotDoneReport({
 
 
 
+
+
+
+
             []
 
 
 
+
+
+
+
           ).map((row) => ({
+
+
+
+
 
 
 
@@ -3943,7 +7880,19 @@ function NotDoneReport({
 
 
 
-            _name:
+
+
+
+
+
+
+
+
+            \_name:
+
+
+
+
 
 
 
@@ -3951,7 +7900,15 @@ function NotDoneReport({
 
 
 
-                row.assigned_to_id
+
+
+
+
+                row\.assigned_to_id
+
+
+
+
 
 
 
@@ -3959,7 +7916,15 @@ function NotDoneReport({
 
 
 
-              row.assigned_to_name ||
+
+
+
+
+              row\.assigned_to_name ||
+
+
+
+
 
 
 
@@ -3967,11 +7932,23 @@ function NotDoneReport({
 
 
 
+
+
+
+
           }))
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -3979,7 +7956,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
         console.error(
+
+
+
+
 
 
 
@@ -3987,7 +7972,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
           error
+
+
+
+
 
 
 
@@ -3995,7 +7988,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
       } finally {
+
+
+
+
 
 
 
@@ -4003,11 +8004,23 @@ function NotDoneReport({
 
 
 
+
+
+
+
       }
 
 
 
+
+
+
+
     })();
+
+
+
+
 
 
 
@@ -4019,19 +8032,43 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="space-y-3">
 
 
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+
+    \<div className="space-y-3">
 
 
 
-        <p className="text-xs text-slate-500">
+
+
+
+
+      \<div className="flex items-center justify-between gap-2 flex-wrap">
+
+
+
+
+
+
+
+        \<p className="text-xs text-slate-500">
+
+
+
+
 
 
 
@@ -4039,7 +8076,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
           deadline, not completed
+
+
+
+
 
 
 
@@ -4047,11 +8092,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
           view.
 
 
 
-        </p>
+
+
+
+
+        \</p>
 
 
 
@@ -4059,7 +8112,19 @@ function NotDoneReport({
 
 
 
-        <ManagerFilter
+
+
+
+
+
+
+
+
+        \<ManagerFilter
+
+
+
+
 
 
 
@@ -4067,7 +8132,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
           value={managerId}
+
+
+
+
 
 
 
@@ -4075,11 +8148,27 @@ function NotDoneReport({
 
 
 
+
+
+
+
         />
 
 
 
-      </div>
+
+
+
+
+      \</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -4091,7 +8180,15 @@ function NotDoneReport({
 
 
 
-        <div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -4099,7 +8196,15 @@ function NotDoneReport({
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -4107,7 +8212,15 @@ function NotDoneReport({
 
 
 
-        <p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -4115,7 +8228,15 @@ function NotDoneReport({
 
 
 
-        </p>
+
+
+
+
+        \</p>
+
+
+
+
 
 
 
@@ -4123,7 +8244,15 @@ function NotDoneReport({
 
 
 
-        <div className="space-y-2">
+
+
+
+
+        \<div className="space-y-2">
+
+
+
+
 
 
 
@@ -4131,7 +8260,15 @@ function NotDoneReport({
 
 
 
-            <div
+
+
+
+
+            \<div
+
+
+
+
 
 
 
@@ -4139,11 +8276,23 @@ function NotDoneReport({
 
 
 
-                row.id ||
 
 
 
-                row._id
+
+                row\.id ||
+
+
+
+
+
+
+
+                row.\_id
+
+
+
+
 
 
 
@@ -4151,7 +8300,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
               className="bg-white rounded-2xl p-3 border border-red-100"
+
+
+
+
 
 
 
@@ -4159,15 +8316,11 @@ function NotDoneReport({
 
 
 
-              <p className="text-sm font-semibold text-slate-800">
 
 
 
-                {row.title}
 
-
-
-              </p>
+              \<p className="text-sm font-semibold text-slate-800">
 
 
 
@@ -4175,15 +8328,7 @@ function NotDoneReport({
 
 
 
-              <div className="flex items-center justify-between mt-1">
-
-
-
-                <span className="text-[11px] text-slate-500">
-
-
-
-                  {row._name}
+                {row\.title}
 
 
 
@@ -4191,11 +8336,67 @@ function NotDoneReport({
 
 
 
-                  {row.store_name
+              \</p>
 
 
 
-                    ? ` · ${row.store_name}`
+
+
+
+
+
+
+
+
+
+
+
+
+              \<div className="flex items-center justify-between mt-1">
+
+
+
+
+
+
+
+                \<span className="text-[11px] text-slate-500">
+
+
+
+
+
+
+
+                  {row.\_name}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  {row\.store_name
+
+
+
+
+
+
+
+                    ? \` · ${row\.store_name}\`
+
+
+
+
 
 
 
@@ -4203,7 +8404,11 @@ function NotDoneReport({
 
 
 
-                </span>
+
+
+
+
+                \</span>
 
 
 
@@ -4211,7 +8416,19 @@ function NotDoneReport({
 
 
 
-                <span className="text-[11px] text-red-600 font-medium">
+
+
+
+
+
+
+
+
+                \<span className="text-[11px] text-red-600 font-medium">
+
+
+
+
 
 
 
@@ -4219,7 +8436,15 @@ function NotDoneReport({
 
 
 
-                  {row.due_date
+
+
+
+
+                  {row\.due_date
+
+
+
+
 
 
 
@@ -4227,7 +8452,15 @@ function NotDoneReport({
 
 
 
-                        row.due_date
+
+
+
+
+                        row\.due_date
+
+
+
+
 
 
 
@@ -4235,7 +8468,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
                         [],
+
+
+
+
 
 
 
@@ -4243,7 +8484,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
                           day: "numeric",
+
+
+
+
 
 
 
@@ -4251,7 +8500,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
                           hour: "2-digit",
+
+
+
+
 
 
 
@@ -4259,7 +8516,15 @@ function NotDoneReport({
 
 
 
+
+
+
+
                         }
+
+
+
+
 
 
 
@@ -4267,19 +8532,39 @@ function NotDoneReport({
 
 
 
+
+
+
+
                     : "—"}
 
 
 
-                </span>
 
 
 
-              </div>
+
+                \</span>
 
 
 
-            </div>
+
+
+
+
+              \</div>
+
+
+
+
+
+
+
+            \</div>
+
+
+
+
 
 
 
@@ -4287,7 +8572,15 @@ function NotDoneReport({
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -4295,11 +8588,23 @@ function NotDoneReport({
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -4311,7 +8616,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -4319,7 +8636,19 @@ function NotDoneReport({
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -4331,6 +8660,10 @@ function TailorReport() {
 
 
 
+
+
+
+
   const { t } = useLang();
 
 
@@ -4339,7 +8672,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
   const [unit, setUnit] =
+
+
+
+
 
 
 
@@ -4351,7 +8696,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
   const [rows, setRows] =
+
+
+
+
 
 
 
@@ -4363,7 +8720,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
   const [loading, setLoading] =
+
+
+
+
 
 
 
@@ -4375,11 +8744,27 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
 
 
 
+
+
+
+
     (async () => {
+
+
+
+
 
 
 
@@ -4391,7 +8776,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
       try {
+
+
+
+
 
 
 
@@ -4399,7 +8796,19 @@ function TailorReport() {
 
 
 
+
+
+
+
           storeQuery();
+
+
+
+
+
+
+
+
 
 
 
@@ -4411,7 +8820,15 @@ function TailorReport() {
 
 
 
+
+
+
+
           pantsAgg,
+
+
+
+
 
 
 
@@ -4419,7 +8836,15 @@ function TailorReport() {
 
 
 
+
+
+
+
           alterAgg,
+
+
+
+
 
 
 
@@ -4427,7 +8852,15 @@ function TailorReport() {
 
 
 
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -4435,11 +8868,23 @@ function TailorReport() {
 
 
 
+
+
+
+
             {
 
 
 
+
+
+
+
               query: {
+
+
+
+
 
 
 
@@ -4447,7 +8892,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 status: {
+
+
+
+
 
 
 
@@ -4455,7 +8908,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                     "Completed",
+
+
+
+
 
 
 
@@ -4463,7 +8924,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                   ],
+
+
+
+
 
 
 
@@ -4471,7 +8940,19 @@ function TailorReport() {
 
 
 
+
+
+
+
               },
+
+
+
+
+
+
+
+
 
 
 
@@ -4483,7 +8964,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 field:
+
+
+
+
 
 
 
@@ -4491,7 +8980,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 unit,
+
+
+
+
 
 
 
@@ -4503,7 +9000,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
               count: true,
+
+
+
+
 
 
 
@@ -4511,7 +9020,15 @@ function TailorReport() {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -4523,7 +9040,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -4531,20 +9060,45 @@ function TailorReport() {
 
 
 
+
+
+
+
             {
 
 
 
+
+
+
+
               query: {
-                ...query,
-                status: {
-                  $in: [
-                    "Completed",
-                    "Delivered",
-                  ],
-                },
-                on_time: true,
-              },
+
+                ...query,
+
+                status: {
+
+                  $in: [
+
+                    "Completed",
+
+                    "Delivered",
+
+                  ],
+
+                },
+
+                on_time: true,
+
+              },
+
+
+
+
+
+
+
+
 
 
 
@@ -4556,7 +9110,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 field:
+
+
+
+
 
 
 
@@ -4564,7 +9126,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 unit,
+
+
+
+
 
 
 
@@ -4576,7 +9146,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
               count: true,
+
+
+
+
 
 
 
@@ -4584,7 +9166,15 @@ function TailorReport() {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -4596,7 +9186,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
           reportAggregate(
+
+
+
+
 
 
 
@@ -4604,7 +9206,15 @@ function TailorReport() {
 
 
 
+
+
+
+
             {
+
+
+
+
 
 
 
@@ -4612,7 +9222,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 ...query,
+
+
+
+
 
 
 
@@ -4620,7 +9238,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                   $in: [
+
+
+
+
 
 
 
@@ -4628,7 +9254,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                     "Delivered",
+
+
+
+
 
 
 
@@ -4636,11 +9270,27 @@ function TailorReport() {
 
 
 
+
+
+
+
                 },
 
 
 
+
+
+
+
               },
+
+
+
+
+
+
+
+
 
 
 
@@ -4652,7 +9302,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 field:
+
+
+
+
 
 
 
@@ -4660,7 +9318,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                 unit,
+
+
+
+
 
 
 
@@ -4672,7 +9338,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
               count: true,
+
+
+
+
 
 
 
@@ -4680,11 +9358,23 @@ function TailorReport() {
 
 
 
+
+
+
+
             }
 
 
 
+
+
+
+
           ),
+
+
+
+
 
 
 
@@ -4696,11 +9386,27 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
         const onTimeMap = {};
 
 
 
+
+
+
+
         const alterMap = {};
+
+
+
+
 
 
 
@@ -4712,7 +9418,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -4720,7 +9438,15 @@ function TailorReport() {
 
 
 
+
+
+
+
         ).forEach((row) => {
+
+
+
+
 
 
 
@@ -4728,11 +9454,23 @@ function TailorReport() {
 
 
 
-            row.completed_at
 
 
 
-          ] = row.count;
+
+            row\.completed_at
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
 
 
 
@@ -4744,7 +9482,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -4752,7 +9502,15 @@ function TailorReport() {
 
 
 
+
+
+
+
         ).forEach((row) => {
+
+
+
+
 
 
 
@@ -4760,15 +9518,35 @@ function TailorReport() {
 
 
 
-            row.completed_at
 
 
 
-          ] = row.count;
+
+            row\.completed_at
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
 
 
 
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -4780,7 +9558,15 @@ function TailorReport() {
 
 
 
+
+
+
+
           pantsAgg.rows || []
+
+
+
+
 
 
 
@@ -4788,19 +9574,43 @@ function TailorReport() {
 
 
 
+
+
+
+
           pantsMap[
 
 
 
-            row.completed_at
 
 
 
-          ] = row.count;
+
+            row\.completed_at
+
+
+
+
+
+
+
+          ] = row\.count;
+
+
+
+
 
 
 
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -4812,11 +9622,23 @@ function TailorReport() {
 
 
 
+
+
+
+
           ...new Set([
 
 
 
+
+
+
+
             ...Object.keys(
+
+
+
+
 
 
 
@@ -4824,11 +9646,23 @@ function TailorReport() {
 
 
 
+
+
+
+
             ),
 
 
 
+
+
+
+
             ...Object.keys(
+
+
+
+
 
 
 
@@ -4836,7 +9670,15 @@ function TailorReport() {
 
 
 
+
+
+
+
             ),
+
+
+
+
 
 
 
@@ -4844,7 +9686,15 @@ function TailorReport() {
 
 
 
+
+
+
+
               alterMap
+
+
+
+
 
 
 
@@ -4852,7 +9702,15 @@ function TailorReport() {
 
 
 
+
+
+
+
           ]),
+
+
+
+
 
 
 
@@ -4864,11 +9722,27 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
         setRows(
 
 
 
+
+
+
+
           keys.map((key) => ({
+
+
+
+
 
 
 
@@ -4880,7 +9754,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
             pants:
+
+
+
+
 
 
 
@@ -4888,7 +9774,19 @@ function TailorReport() {
 
 
 
+
+
+
+
               0,
+
+
+
+
+
+
+
+
 
 
 
@@ -4900,11 +9798,27 @@ function TailorReport() {
 
 
 
+
+
+
+
               onTimeMap[key] ||
 
 
 
+
+
+
+
               0,
+
+
+
+
+
+
+
+
 
 
 
@@ -4916,7 +9830,15 @@ function TailorReport() {
 
 
 
+
+
+
+
               alterMap[key] ||
+
+
+
+
 
 
 
@@ -4924,11 +9846,23 @@ function TailorReport() {
 
 
 
+
+
+
+
           }))
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -4936,7 +9870,15 @@ function TailorReport() {
 
 
 
+
+
+
+
         console.error(
+
+
+
+
 
 
 
@@ -4944,7 +9886,15 @@ function TailorReport() {
 
 
 
+
+
+
+
           error
+
+
+
+
 
 
 
@@ -4952,7 +9902,15 @@ function TailorReport() {
 
 
 
+
+
+
+
       } finally {
+
+
+
+
 
 
 
@@ -4960,11 +9918,23 @@ function TailorReport() {
 
 
 
+
+
+
+
       }
 
 
 
+
+
+
+
     })();
+
+
+
+
 
 
 
@@ -4976,15 +9946,35 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="space-y-3">
 
 
 
-      <PeriodToggle
+
+    \<div className="space-y-3">
+
+
+
+
+
+
+
+      \<PeriodToggle
+
+
+
+
 
 
 
@@ -4992,7 +9982,15 @@ function TailorReport() {
 
 
 
+
+
+
+
         setUnit={setUnit}
+
+
+
+
 
 
 
@@ -5004,11 +10002,27 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
       {loading ? (
 
 
 
-        <div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -5016,7 +10030,15 @@ function TailorReport() {
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -5024,7 +10046,15 @@ function TailorReport() {
 
 
 
-        <p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -5032,7 +10062,15 @@ function TailorReport() {
 
 
 
-        </p>
+
+
+
+
+        \</p>
+
+
+
+
 
 
 
@@ -5040,7 +10078,15 @@ function TailorReport() {
 
 
 
-        <div className="space-y-2">
+
+
+
+
+        \<div className="space-y-2">
+
+
+
+
 
 
 
@@ -5048,11 +10094,23 @@ function TailorReport() {
 
 
 
+
+
+
+
             const onTimePct =
 
 
 
-              row.pants
+
+
+
+
+              row\.pants
+
+
+
+
 
 
 
@@ -5060,11 +10118,23 @@ function TailorReport() {
 
 
 
-                    (row.onTime /
 
 
 
-                      row.pants) *
+
+                    (row\.onTime /
+
+
+
+
+
+
+
+                      row\.pants) \*
+
+
+
+
 
 
 
@@ -5072,7 +10142,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                   )
+
+
+
+
 
 
 
@@ -5084,7 +10162,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
             const label =
+
+
+
+
 
 
 
@@ -5092,11 +10182,23 @@ function TailorReport() {
 
 
 
+
+
+
+
                 ? new Date(
 
 
 
-                    row.key
+
+
+
+
+                    row\.key
+
+
+
+
 
 
 
@@ -5104,7 +10206,15 @@ function TailorReport() {
 
 
 
-                : row.key.slice(
+
+
+
+
+                : row\.key.slice(
+
+
+
+
 
 
 
@@ -5112,7 +10222,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                     7
+
+
+
+
 
 
 
@@ -5124,15 +10242,35 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
             return (
 
 
 
-              <div
 
 
 
-                key={row.key}
+
+              \<div
+
+
+
+
+
+
+
+                key={row\.key}
+
+
+
+
 
 
 
@@ -5140,11 +10278,23 @@ function TailorReport() {
 
 
 
+
+
+
+
               >
 
 
 
-                <p className="text-sm font-semibold text-slate-800 mb-2">
+
+
+
+
+                \<p className="text-sm font-semibold text-slate-800 mb-2">
+
+
+
+
 
 
 
@@ -5152,7 +10302,11 @@ function TailorReport() {
 
 
 
-                </p>
+
+
+
+
+                \</p>
 
 
 
@@ -5160,23 +10314,6 @@ function TailorReport() {
 
 
 
-                <div className="grid grid-cols-3 gap-2 text-center">
-
-
-
-                  <div>
-
-
-
-                    <p className="text-lg font-bold text-slate-900">
-
-
-
-                      {row.pants}
-
-
-
-                    </p>
 
 
 
@@ -5184,11 +10321,68 @@ function TailorReport() {
 
 
 
-                    <p className="text-[10px] text-slate-500">
+
+                \<div className="grid grid-cols-3 gap-2 text-center">
+
+
+
+
+
+
+
+                  \<div>
+
+
+
+
+
+
+
+                    \<p className="text-lg font-bold text-slate-900">
+
+
+
+
+
+
+
+                      {row\.pants}
+
+
+
+
+
+
+
+                    \</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    \<p className="text-[10px] text-slate-500">
+
+
+
+
 
 
 
                       {t(
+
+
+
+
 
 
 
@@ -5196,35 +10390,19 @@ function TailorReport() {
 
 
 
+
+
+
+
                       )}
 
 
 
-                    </p>
-
-
-
-                  </div>
 
 
 
 
-
-
-
-                  <div>
-
-
-
-                    <p className="text-lg font-bold text-green-700">
-
-
-
-                      {row.onTime}
-
-
-
-                    </p>
+                    \</p>
 
 
 
@@ -5232,11 +10410,75 @@ function TailorReport() {
 
 
 
-                    <p className="text-[10px] text-slate-500">
+                  \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  \<div>
+
+
+
+
+
+
+
+                    \<p className="text-lg font-bold text-green-700">
+
+
+
+
+
+
+
+                      {row\.onTime}
+
+
+
+
+
+
+
+                    \</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    \<p className="text-[10px] text-slate-500">
+
+
+
+
 
 
 
                       {t(
+
+
+
+
 
 
 
@@ -5244,35 +10486,19 @@ function TailorReport() {
 
 
 
+
+
+
+
                       )}
 
 
 
-                    </p>
-
-
-
-                  </div>
 
 
 
 
-
-
-
-                  <div>
-
-
-
-                    <p className="text-lg font-bold text-purple-700">
-
-
-
-                      {row.alter}
-
-
-
-                    </p>
+                    \</p>
 
 
 
@@ -5280,7 +10506,67 @@ function TailorReport() {
 
 
 
-                    <p className="text-[10px] text-slate-500">
+                  \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  \<div>
+
+
+
+
+
+
+
+                    \<p className="text-lg font-bold text-purple-700">
+
+
+
+
+
+
+
+                      {row\.alter}
+
+
+
+
+
+
+
+                    \</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    \<p className="text-[10px] text-slate-500">
+
+
+
+
 
 
 
@@ -5288,7 +10574,15 @@ function TailorReport() {
 
 
 
+
+
+
+
                         "alterations"
+
+
+
+
 
 
 
@@ -5296,15 +10590,11 @@ function TailorReport() {
 
 
 
-                    </p>
 
 
 
-                  </div>
 
-
-
-                </div>
+                    \</p>
 
 
 
@@ -5312,11 +10602,43 @@ function TailorReport() {
 
 
 
-                <div className="mt-2 w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  \</div>
 
 
 
-                  <div
+
+
+
+
+                \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                \<div className="mt-2 w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+
+
+
+
+
+
+
+                  \<div
+
+
+
+
 
 
 
@@ -5324,11 +10646,23 @@ function TailorReport() {
 
 
 
+
+
+
+
                     style={{
 
 
 
-                      width: `${onTimePct}%`,
+
+
+
+
+                      width: \`${onTimePct}%\`,
+
+
+
+
 
 
 
@@ -5336,11 +10670,19 @@ function TailorReport() {
 
 
 
+
+
+
+
                   />
 
 
 
-                </div>
+
+
+
+
+                \</div>
 
 
 
@@ -5348,7 +10690,19 @@ function TailorReport() {
 
 
 
-                <p className="text-[11px] text-slate-400 mt-1">
+
+
+
+
+
+
+
+
+                \<p className="text-[11px] text-slate-400 mt-1">
+
+
+
+
 
 
 
@@ -5356,15 +10710,31 @@ function TailorReport() {
 
 
 
+
+
+
+
                   {onTimePct}%
 
 
 
-                </p>
 
 
 
-              </div>
+
+                \</p>
+
+
+
+
+
+
+
+              \</div>
+
+
+
+
 
 
 
@@ -5372,11 +10742,23 @@ function TailorReport() {
 
 
 
+
+
+
+
           })}
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -5384,11 +10766,23 @@ function TailorReport() {
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -5400,7 +10794,19 @@ function TailorReport() {
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -5408,7 +10814,19 @@ function TailorReport() {
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -5420,11 +10838,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
   users,
 
 
 
+
+
+
+
 }) {
+
+
+
+
 
 
 
@@ -5436,7 +10866,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
   const [unit, setUnit] =
+
+
+
+
 
 
 
@@ -5448,7 +10890,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
   const [rows, setRows] =
+
+
+
+
 
 
 
@@ -5460,7 +10914,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
   const [loading, setLoading] =
+
+
+
+
 
 
 
@@ -5472,7 +10938,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
   const [managerId, setManagerId] =
+
+
+
+
 
 
 
@@ -5484,11 +10962,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
 
 
 
+
+
+
+
     (async () => {
+
+
+
+
 
 
 
@@ -5500,11 +10994,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
       try {
 
 
 
+
+
+
+
         const query =
+
+
+
+
 
 
 
@@ -5516,7 +11026,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
         const periodField =
+
+
+
+
 
 
 
@@ -5524,11 +11046,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
             ? "date"
 
 
 
+
+
+
+
             : "month";
+
+
+
+
+
+
+
+
 
 
 
@@ -5544,7 +11082,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
         if (
+
+
+
+
 
 
 
@@ -5552,7 +11102,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
         ) {
+
+
+
+
 
 
 
@@ -5560,7 +11118,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
             await reportAggregate(
+
+
+
+
 
 
 
@@ -5568,11 +11134,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
               {
 
 
 
+
+
+
+
                 query,
+
+
+
+
+
+
+
+
 
 
 
@@ -5584,11 +11166,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
                   periodField,
 
 
 
+
+
+
+
                   "manager_id",
+
+
+
+
 
 
 
@@ -5600,7 +11194,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
                 avg:
+
+
+
+
 
 
 
@@ -5612,7 +11218,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
                 count: true,
+
+
+
+
+
+
+
+
 
 
 
@@ -5624,7 +11246,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               }
+
+
+
+
 
 
 
@@ -5636,7 +11266,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
           aggregateRows =
+
+
+
+
 
 
 
@@ -5644,11 +11286,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
         } else {
 
 
 
+
+
+
+
           query.manager_id =
+
+
+
+
 
 
 
@@ -5660,7 +11314,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
           const response =
+
+
+
+
 
 
 
@@ -5668,11 +11334,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
               "ChecklistEntry",
 
 
 
+
+
+
+
               {
+
+
+
+
 
 
 
@@ -5684,7 +11362,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
                 groupBy:
+
+
+
+
 
 
 
@@ -5696,11 +11386,31 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
                 avg:
 
 
 
+
+
+
+
                   "completed_pct",
+
+
+
+
+
+
+
+
 
 
 
@@ -5716,7 +11426,23 @@ function ChecklistReport({
 
 
 
-                sort: `-${periodField}`,
+
+
+
+
+
+
+
+
+                sort: \`-${periodField}\`,
+
+
+
+
+
+
+
+
 
 
 
@@ -5728,7 +11454,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               }
+
+
+
+
 
 
 
@@ -5740,7 +11474,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
           aggregateRows = (
+
+
+
+
 
 
 
@@ -5748,7 +11494,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
           ).map(
+
+
+
+
 
 
 
@@ -5756,7 +11510,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               ...row,
+
+
+
+
 
 
 
@@ -5764,7 +11526,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                 managerId,
+
+
+
+
 
 
 
@@ -5772,11 +11542,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
           );
 
 
 
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -5792,7 +11578,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
         (
+
+
+
+
 
 
 
@@ -5800,7 +11598,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
         ).forEach((user) => {
+
+
+
+
 
 
 
@@ -5808,11 +11614,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
             user.id ||
 
 
 
-              user._id
+
+
+
+
+              user.\_id
+
+
+
+
 
 
 
@@ -5820,7 +11638,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
             user.name ||
+
+
+
+
 
 
 
@@ -5828,11 +11654,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
             user.email;
 
 
 
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -5848,7 +11690,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
         aggregateRows.forEach(
+
+
+
+
 
 
 
@@ -5856,7 +11710,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
             const period =
+
+
+
+
 
 
 
@@ -5864,7 +11726,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                 periodField
+
+
+
+
 
 
 
@@ -5876,7 +11746,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
             if (!period) {
+
+
+
+
 
 
 
@@ -5884,7 +11766,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -5896,7 +11790,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               !periods[period]
+
+
+
+
 
 
 
@@ -5904,7 +11806,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               periods[period] = {
+
+
+
+
 
 
 
@@ -5912,11 +11822,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
                 rows: [],
 
 
 
+
+
+
+
               };
+
+
+
+
 
 
 
@@ -5928,7 +11850,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
             periods[
+
+
+
+
 
 
 
@@ -5936,7 +11870,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
             ].rows.push({
+
+
+
+
 
 
 
@@ -5944,7 +11886,19 @@ function ChecklistReport({
 
 
 
-                row.manager_id,
+
+
+
+
+                row\.manager_id,
+
+
+
+
+
+
+
+
 
 
 
@@ -5956,11 +11910,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
                 nameMap[
 
 
 
-                  row.manager_id
+
+
+
+
+                  row\.manager_id
+
+
+
+
 
 
 
@@ -5968,7 +11934,15 @@ function ChecklistReport({
 
 
 
-                row.manager_name ||
+
+
+
+
+                row\.manager_name ||
+
+
+
+
 
 
 
@@ -5980,15 +11954,35 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
               pct: Math.round(
 
 
 
-                row.avg_completed_pct ||
+
+
+
+
+                row\.avg_completed_pct ||
+
+
+
+
 
 
 
                   0
+
+
+
+
 
 
 
@@ -6000,11 +11994,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
               count:
 
 
 
-                row.count,
+
+
+
+
+                row\.count,
+
+
+
+
 
 
 
@@ -6012,11 +12022,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
           }
 
 
 
+
+
+
+
         );
+
+
+
+
+
+
+
+
 
 
 
@@ -6028,7 +12054,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
           Object.values(
+
+
+
+
 
 
 
@@ -6036,7 +12070,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
           ).sort((a, b) =>
+
+
+
+
 
 
 
@@ -6044,7 +12086,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               a.period
+
+
+
+
 
 
 
@@ -6052,11 +12102,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
           )
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -6064,7 +12126,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
         console.error(
+
+
+
+
 
 
 
@@ -6072,7 +12142,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
           error
+
+
+
+
 
 
 
@@ -6080,7 +12158,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
       } finally {
+
+
+
+
 
 
 
@@ -6088,7 +12174,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -6096,7 +12190,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
   }, [
+
+
+
+
 
 
 
@@ -6104,11 +12206,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
     managerId,
 
 
 
+
+
+
+
     users,
+
+
+
+
 
 
 
@@ -6120,19 +12234,43 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="space-y-3">
 
 
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+
+    \<div className="space-y-3">
 
 
 
-        <PeriodToggle
+
+
+
+
+      \<div className="flex items-center justify-between gap-2 flex-wrap">
+
+
+
+
+
+
+
+        \<PeriodToggle
+
+
+
+
 
 
 
@@ -6140,7 +12278,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
           setUnit={setUnit}
+
+
+
+
 
 
 
@@ -6152,7 +12298,19 @@ function ChecklistReport({
 
 
 
-        <ManagerFilter
+
+
+
+
+
+
+
+
+        \<ManagerFilter
+
+
+
+
 
 
 
@@ -6160,7 +12318,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
           value={managerId}
+
+
+
+
 
 
 
@@ -6168,11 +12334,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
         />
 
 
 
-      </div>
+
+
+
+
+      \</div>
 
 
 
@@ -6180,7 +12354,19 @@ function ChecklistReport({
 
 
 
-      <p className="text-xs text-slate-500">
+
+
+
+
+
+
+
+
+      \<p className="text-xs text-slate-500">
+
+
+
+
 
 
 
@@ -6188,11 +12374,27 @@ function ChecklistReport({
 
 
 
+
+
+
+
         completion % per manager.
 
 
 
-      </p>
+
+
+
+
+      \</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -6204,7 +12406,15 @@ function ChecklistReport({
 
 
 
-        <div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<div className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -6212,7 +12422,15 @@ function ChecklistReport({
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -6220,7 +12438,15 @@ function ChecklistReport({
 
 
 
-        <p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
+        \<p className="text-center text-slate-400 text-sm py-4">
+
+
+
+
 
 
 
@@ -6228,7 +12454,15 @@ function ChecklistReport({
 
 
 
-        </p>
+
+
+
+
+        \</p>
+
+
+
+
 
 
 
@@ -6236,7 +12470,15 @@ function ChecklistReport({
 
 
 
-        <div className="space-y-2">
+
+
+
+
+        \<div className="space-y-2">
+
+
+
+
 
 
 
@@ -6244,7 +12486,15 @@ function ChecklistReport({
 
 
 
-            <div
+
+
+
+
+            \<div
+
+
+
+
 
 
 
@@ -6252,7 +12502,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                 period.period
+
+
+
+
 
 
 
@@ -6260,7 +12518,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
               className="bg-white rounded-2xl p-4 border border-slate-100"
+
+
+
+
 
 
 
@@ -6268,11 +12534,23 @@ function ChecklistReport({
 
 
 
-              <div className="flex items-center justify-between mb-2">
 
 
 
-                <span className="text-sm font-semibold text-slate-800">
+
+              \<div className="flex items-center justify-between mb-2">
+
+
+
+
+
+
+
+                \<span className="text-sm font-semibold text-slate-800">
+
+
+
+
 
 
 
@@ -6280,7 +12558,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                     ? new Date(
+
+
+
+
 
 
 
@@ -6288,7 +12574,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                       ).toLocaleDateString()
+
+
+
+
 
 
 
@@ -6296,7 +12590,11 @@ function ChecklistReport({
 
 
 
-                </span>
+
+
+
+
+                \</span>
 
 
 
@@ -6304,7 +12602,19 @@ function ChecklistReport({
 
 
 
-                <span className="text-xs text-slate-500">
+
+
+
+
+
+
+
+
+                \<span className="text-xs text-slate-500">
+
+
+
+
 
 
 
@@ -6312,7 +12622,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                     period.rows
+
+
+
+
 
 
 
@@ -6320,7 +12638,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                   }{" "}
+
+
+
+
 
 
 
@@ -6328,19 +12654,39 @@ function ChecklistReport({
 
 
 
-                </span>
-
-
-
-              </div>
 
 
 
 
+                \</span>
 
 
 
-              <div className="space-y-1.5">
+
+
+
+
+              \</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              \<div className="space-y-1.5">
+
+
+
+
 
 
 
@@ -6348,11 +12694,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
                   (row) => (
 
 
 
-                    <div
+
+
+
+
+                    \<div
+
+
+
+
 
 
 
@@ -6360,7 +12718,15 @@ function ChecklistReport({
 
 
 
-                        row.manager_id
+
+
+
+
+                        row\.manager_id
+
+
+
+
 
 
 
@@ -6368,7 +12734,15 @@ function ChecklistReport({
 
 
 
+
+
+
+
                       className="flex items-center justify-between gap-2 text-sm"
+
+
+
+
 
 
 
@@ -6376,15 +12750,11 @@ function ChecklistReport({
 
 
 
-                      <span className="text-slate-700 flex-1 truncate">
 
 
 
-                        {row.name}
 
-
-
-                      </span>
+                      \<span className="text-slate-700 flex-1 truncate">
 
 
 
@@ -6392,15 +12762,51 @@ function ChecklistReport({
 
 
 
-                      <div className="flex items-center gap-2 w-32">
+                        {row\.name}
 
 
 
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
 
 
 
-                          <div
+
+                      \</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      \<div className="flex items-center gap-2 w-32">
+
+
+
+
+
+
+
+                        \<div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+
+
+
+
+
+
+
+                          \<div
+
+
+
+
 
 
 
@@ -6408,11 +12814,23 @@ function ChecklistReport({
 
 
 
+
+
+
+
                             style={{
 
 
 
-                              width: `${row.pct}%`,
+
+
+
+
+                              width: \`${row\.pct}%\`,
+
+
+
+
 
 
 
@@ -6420,11 +12838,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
                           />
 
 
 
-                        </div>
+
+
+
+
+                        \</div>
 
 
 
@@ -6432,23 +12858,51 @@ function ChecklistReport({
 
 
 
-                        <span className="text-xs font-semibold text-slate-700 w-9 text-right">
 
 
 
-                          {row.pct}%
 
 
 
-                        </span>
+
+
+                        \<span className="text-xs font-semibold text-slate-700 w-9 text-right">
 
 
 
-                      </div>
 
 
 
-                    </div>
+
+                          {row\.pct}%
+
+
+
+
+
+
+
+                        \</span>
+
+
+
+
+
+
+
+                      \</div>
+
+
+
+
+
+
+
+                    \</div>
+
+
+
+
 
 
 
@@ -6456,15 +12910,31 @@ function ChecklistReport({
 
 
 
+
+
+
+
                 )}
 
 
 
-              </div>
 
 
 
-            </div>
+
+              \</div>
+
+
+
+
+
+
+
+            \</div>
+
+
+
+
 
 
 
@@ -6472,7 +12942,15 @@ function ChecklistReport({
 
 
 
-        </div>
+
+
+
+
+        \</div>
+
+
+
+
 
 
 
@@ -6480,11 +12958,23 @@ function ChecklistReport({
 
 
 
-    </div>
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
@@ -6496,7 +12986,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
+
+
+
+
 // ==================================================
+
+
+
+
 
 
 
@@ -6504,7 +13006,19 @@ function ChecklistReport({
 
 
 
+
+
+
+
 // ==================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -6516,7 +13030,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
   const [cutoff, setCutoff] =
+
+
+
+
 
 
 
@@ -6528,7 +13050,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
   const [busy, setBusy] =
+
+
+
+
 
 
 
@@ -6540,7 +13074,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
   const run = async (
+
+
+
+
 
 
 
@@ -6548,7 +13094,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
     query,
+
+
+
+
 
 
 
@@ -6556,7 +13110,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
   ) => {
+
+
+
+
 
 
 
@@ -6564,7 +13126,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       toast.error(
+
+
+
+
 
 
 
@@ -6572,7 +13142,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       );
+
+
+
+
 
 
 
@@ -6580,7 +13158,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -6592,11 +13182,23 @@ function DeletePriorData() {
 
 
 
-      !window.confirm(
 
 
 
-        `Permanently delete all completed ${label} records before ${cutoff}? This cannot be undone.`
+
+      !window\.confirm(
+
+
+
+
+
+
+
+        \`Permanently delete all completed ${label} records before ${cutoff}? This cannot be undone.\`
+
+
+
+
 
 
 
@@ -6604,7 +13206,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
     ) {
+
+
+
+
 
 
 
@@ -6612,7 +13222,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -6628,7 +13250,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -6636,7 +13270,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
         await apiFetch(
+
+
+
+
 
 
 
@@ -6644,7 +13286,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           {
+
+
+
+
 
 
 
@@ -6652,7 +13302,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             body: JSON.stringify({
+
+
+
+
 
 
 
@@ -6660,7 +13318,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
               query,
+
+
+
+
 
 
 
@@ -6668,7 +13334,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           }
+
+
+
+
 
 
 
@@ -6680,7 +13354,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       const total =
+
+
+
+
 
 
 
@@ -6692,7 +13378,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       toast.success(
+
+
+
+
 
 
 
@@ -6700,15 +13398,31 @@ function DeletePriorData() {
 
 
 
-          ? `Deleted ${total} ${label} record(s)`
 
 
 
-          : `Completed ${label} records cleared`
+
+          ? \`Deleted ${total} ${label} record(s)\`
+
+
+
+
+
+
+
+          : \`Completed ${label} records cleared\`
+
+
+
+
 
 
 
       );
+
+
+
+
 
 
 
@@ -6716,7 +13430,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       toast.error(
+
+
+
+
 
 
 
@@ -6724,7 +13446,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           (error.message ||
+
+
+
+
 
 
 
@@ -6732,7 +13462,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       );
+
+
+
+
 
 
 
@@ -6740,11 +13478,23 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       setBusy(false);
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -6756,7 +13506,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
   const cutoffIso = cutoff
+
+
+
+
 
 
 
@@ -6764,7 +13526,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
         cutoff +
+
+
+
+
 
 
 
@@ -6772,7 +13542,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       ).toISOString()
+
+
+
+
 
 
 
@@ -6784,7 +13562,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
   const buttons = [
+
+
+
+
 
 
 
@@ -6792,7 +13582,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       entity: "Task",
+
+
+
+
 
 
 
@@ -6804,7 +13602,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       query: {
+
+
+
+
 
 
 
@@ -6812,7 +13622,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           $in: [
+
+
+
+
 
 
 
@@ -6820,7 +13638,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             "Approved",
+
+
+
+
 
 
 
@@ -6828,7 +13654,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
         },
+
+
+
+
+
+
+
+
 
 
 
@@ -6840,7 +13678,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           $lt: cutoffIso,
+
+
+
+
 
 
 
@@ -6848,7 +13694,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       },
+
+
+
+
 
 
 
@@ -6860,11 +13714,27 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
     {
 
 
 
+
+
+
+
       entity: "Alteration",
+
+
+
+
 
 
 
@@ -6876,7 +13746,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       query: {
+
+
+
+
 
 
 
@@ -6884,7 +13766,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           $in: [
+
+
+
+
 
 
 
@@ -6892,7 +13782,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             "Delivered",
+
+
+
+
 
 
 
@@ -6900,7 +13798,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
         },
+
+
+
+
+
+
+
+
 
 
 
@@ -6912,7 +13822,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           $lt: cutoffIso,
+
+
+
+
 
 
 
@@ -6920,7 +13838,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       },
+
+
+
+
 
 
 
@@ -6932,11 +13858,27 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
     {
 
 
 
+
+
+
+
       entity: "PantStitch",
+
+
+
+
 
 
 
@@ -6948,7 +13890,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       query: {
+
+
+
+
 
 
 
@@ -6956,7 +13910,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           $in: [
+
+
+
+
 
 
 
@@ -6964,7 +13926,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             "Delivered",
+
+
+
+
 
 
 
@@ -6972,7 +13942,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
         },
+
+
+
+
+
+
+
+
 
 
 
@@ -6984,7 +13966,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           $lt: cutoffIso,
+
+
+
+
 
 
 
@@ -6992,11 +13982,27 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       },
 
 
 
+
+
+
+
     },
+
+
+
+
+
+
+
+
 
 
 
@@ -7008,7 +14014,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
       entity:
+
+
+
+
 
 
 
@@ -7020,7 +14034,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       label:
+
+
+
+
 
 
 
@@ -7032,7 +14058,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
       query: {
+
+
+
+
 
 
 
@@ -7044,7 +14082,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
         date: {
+
+
+
+
 
 
 
@@ -7052,7 +14102,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
         },
+
+
+
+
 
 
 
@@ -7060,7 +14118,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
     },
+
+
+
+
 
 
 
@@ -7072,19 +14138,23 @@ function DeletePriorData() {
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
 
-    <div className="space-y-3">
 
 
 
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-2">
 
-
-
-        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+    \<div className="space-y-3">
 
 
 
@@ -7092,7 +14162,35 @@ function DeletePriorData() {
 
 
 
-        <p className="text-xs text-amber-700">
+      \<div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-2">
+
+
+
+
+
+
+
+        \<AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        \<p className="text-xs text-amber-700">
+
+
+
+
 
 
 
@@ -7100,7 +14198,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           completed records older
+
+
+
+
 
 
 
@@ -7108,7 +14214,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           Only Done/Approved/
+
+
+
+
 
 
 
@@ -7116,7 +14230,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           removed — active records
+
+
+
+
 
 
 
@@ -7124,31 +14246,63 @@ function DeletePriorData() {
 
 
 
+
+
+
+
           undone.
 
 
 
-        </p>
-
-
-
-      </div>
 
 
 
 
+        \</p>
 
 
 
-      <div className="bg-white rounded-2xl p-4 border border-slate-100 space-y-3">
 
 
 
-        <div>
+
+      \</div>
 
 
 
-          <label className="text-xs font-semibold text-slate-500 mb-1.5 block">
+
+
+
+
+
+
+
+
+
+
+
+
+      \<div className="bg-white rounded-2xl p-4 border border-slate-100 space-y-3">
+
+
+
+
+
+
+
+        \<div>
+
+
+
+
+
+
+
+          \<label className="text-xs font-semibold text-slate-500 mb-1.5 block">
+
+
+
+
 
 
 
@@ -7156,11 +14310,19 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             records before
 
 
 
-          </label>
+
+
+
+
+          \</label>
 
 
 
@@ -7168,7 +14330,19 @@ function DeletePriorData() {
 
 
 
-          <input
+
+
+
+
+
+
+
+
+          \<input
+
+
+
+
 
 
 
@@ -7176,7 +14350,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             value={cutoff}
+
+
+
+
 
 
 
@@ -7184,7 +14366,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
               setCutoff(
+
+
+
+
 
 
 
@@ -7192,7 +14382,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
               )
+
+
+
+
 
 
 
@@ -7200,7 +14398,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
             className="input"
+
+
+
+
 
 
 
@@ -7208,7 +14414,11 @@ function DeletePriorData() {
 
 
 
-        </div>
+
+
+
+
+        \</div>
 
 
 
@@ -7216,7 +14426,19 @@ function DeletePriorData() {
 
 
 
-        <div className="grid grid-cols-2 gap-2">
+
+
+
+
+
+
+
+
+        \<div className="grid grid-cols-2 gap-2">
+
+
+
+
 
 
 
@@ -7224,7 +14446,15 @@ function DeletePriorData() {
 
 
 
-            <button
+
+
+
+
+            \<button
+
+
+
+
 
 
 
@@ -7232,11 +14462,23 @@ function DeletePriorData() {
 
 
 
+
+
+
+
                 button.entity
 
 
 
+
+
+
+
               }
+
+
+
+
 
 
 
@@ -7244,11 +14486,23 @@ function DeletePriorData() {
 
 
 
+
+
+
+
                 busy || !cutoff
 
 
 
+
+
+
+
               }
+
+
+
+
 
 
 
@@ -7256,7 +14510,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
                 run(
+
+
+
+
 
 
 
@@ -7264,7 +14526,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
                   button.query,
+
+
+
+
 
 
 
@@ -7272,7 +14542,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
                 )
+
+
+
+
 
 
 
@@ -7280,7 +14558,15 @@ function DeletePriorData() {
 
 
 
+
+
+
+
               className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-semibold border border-red-200 bg-red-50 text-red-700 disabled:opacity-50"
+
+
+
+
 
 
 
@@ -7288,7 +14574,19 @@ function DeletePriorData() {
 
 
 
-              <Trash2 className="w-4 h-4" />
+
+
+
+
+              \<Trash2 className="w-4 h-4" />
+
+
+
+
+
+
+
+
 
 
 
@@ -7300,11 +14598,23 @@ function DeletePriorData() {
 
 
 
+
+
+
+
               {button.label}
 
 
 
-            </button>
+
+
+
+
+            \</button>
+
+
+
+
 
 
 
@@ -7312,19 +14622,39 @@ function DeletePriorData() {
 
 
 
-        </div>
 
 
 
-      </div>
+
+        \</div>
 
 
 
-    </div>
+
+
+
+
+      \</div>
+
+
+
+
+
+
+
+    \</div>
+
+
+
+
 
 
 
   );
+
+
+
+
 
 
 
