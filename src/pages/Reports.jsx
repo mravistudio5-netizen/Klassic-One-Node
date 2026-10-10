@@ -12,372 +12,374 @@ import { toast } from "sonner";
 
 
 
-
 export default function Reports() {
 
-  const { t } = useLang();
+  const { t } = useLang();
 
-  const { can } = usePermissions();
+  const { can } = usePermissions();
 
 
 
-  const [tab, setTab] = useState("tasks");
+  const [tab, setTab] = useState("tasks");
 
-  const [me, setMe] = useState(null);
+  const [me, setMe] = useState(null);
 
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
 
 
 
-  const [reportPermissions, setReportPermissions] = useState({
+  const [reportPermissions, setReportPermissions] = useState({
 
-    task_report: false,
+    task_report: false,
 
-    not_done: false,
+    not_done: false,
 
-    tailor_report: false,
+    tailor_report: false,
 
-    checklist_report: false,
+    checklist_report: false,
 
-  });
+  });
 
 
 
-  useEffect(() => {
+  useEffect(() => {
 
-    (async () => {
+    (async () => {
 
-      try {
+      try {
 
-        const [meResponse, userResponse] =
+        const [meResponse, userResponse] =
 
-          await Promise.all([
+          await Promise.all([
 
-            apiFetch("/api/auth/me"),
+            apiFetch("/api/auth/me"),
 
-            apiFetch("/api/users?limit=100"),
+            apiFetch("/api/users?limit=100"),
 
-          ]);
+          ]);
 
 
 
-        const currentUser = meResponse.user;
+        const currentUser = meResponse.user;
 
 
 
-        setMe(currentUser);
+        setMe(currentUser);
 
 
 
-        // Load individual report permissions
+        // Load individual report permissions
 
-        try {
+        try {
 
-          const permissionResponse = await apiFetch(
+          const permissionResponse = await apiFetch(
 
-            `/api/permissions/${currentUser.role}`
+            `/api/permissions/${currentUser.role}`
 
-          );
+          );
 
 
 
-          setReportPermissions(
+          setReportPermissions(
 
-            permissionResponse?.item?.report_permissions || {
+            permissionResponse?.item?.report_permissions || {
 
-              task_report: false,
+              task_report: false,
 
-              not_done: false,
+              not_done: false,
 
-              tailor_report: false,
+              tailor_report: false,
 
-              checklist_report: false,
+              checklist_report: false,
 
-            }
+            }
 
-          );
+          );
 
-        } catch (permissionError) {
+        } catch (permissionError) {
 
-          console.error(
+          console.error(
 
-            "Failed to load report permissions:",
+            "Failed to load report permissions:",
 
-            permissionError
+            permissionError
 
-          );
+          );
 
 
 
-          setReportPermissions({
+          setReportPermissions({
 
-            task_report: false,
+            task_report: false,
 
-            not_done: false,
+            not_done: false,
 
-            tailor_report: false,
+            tailor_report: false,
 
-            checklist_report: false,
+            checklist_report: false,
 
-          });
+          });
 
-        }
+        }
 
 
 
-        setUsers(
+        setUsers(
 
-          (userResponse.users || []).filter(
+          (userResponse.users || []).filter(
 
-            (user) =>
+            (user) =>
 
-              [
+              [
 
-                "manager",
+                "manager",
 
-                "tailoring_manager",
+                "tailoring_manager",
 
-                "tailoring_operator",
+                "tailoring_operator",
 
-                "admin",
+                "admin",
 
-                "mis",
+                "mis",
 
-                "owner",
+                "owner",
 
-              ].includes(user.role)
+              ].includes(user.role)
 
-          )
+          )
 
-        );
+        );
 
-      } catch (error) {
+      } catch (error) {
 
-        console.error(
+        console.error(
 
-          "Reports initialization failed:",
+          "Reports initialization failed:",
 
-          error
+          error
 
-        );
+        );
 
-      }
+      }
 
-    })();
+    })();
 
-  }, []);
+  }, []);
 
 
 
-  const isAdmin =
+  const isAdmin =
 
-    me &&
+    me &&
 
-    ["owner", "admin"].includes(me.role);
+    ["owner", "admin"].includes(me.role);
 
 
 
-  const isReviewer =
+  const isReviewer =
 
-    me &&
+    me &&
 
-    ["owner", "admin", "mis"].includes(
+    ["owner", "admin", "mis"].includes(
 
-      me.role
+      me.role
 
-    );
+    );
 
 
 
-  const tabs = [];
+  const tabs = [];
 
 
 
-  // Individual report permissions
+  // Individual report permissions
 
-  if (reportPermissions.task_report) {
+  if (reportPermissions.task_report) {
 
-    tabs.push([
+    tabs.push([
 
-      "tasks",
+      "tasks",
 
-      t("taskReport"),
+      t("taskReport"),
 
-    ]);
+    ]);
 
-  }
+  }
 
 
 
-  if (reportPermissions.not_done) {
+  if (reportPermissions.not_done) {
 
-    tabs.push([
+    tabs.push([
 
-      "notdone",
+      "notdone",
 
-      "Not Done",
+      "Not Done",
 
-    ]);
+    ]);
 
-  }
+  }
 
 
 
-  if (reportPermissions.tailor_report) {
+  if (reportPermissions.tailor_report) {
 
-    tabs.push([
+    tabs.push([
 
-      "tailor",
+      "tailor",
 
-      t("tailorReport"),
+      t("tailorReport"),
 
-    ]);
+    ]);
 
-  }
+  }
 
 
 
-  if (reportPermissions.checklist_report) {
+  if (reportPermissions.checklist_report) {
 
-    tabs.push([
+    tabs.push([
 
-      "checklists",
+      "checklists",
 
-      t("checklistReport"),
+      t("checklistReport"),
 
-    ]);
+    ]);
 
-  }
+  }
 
 
 
-  if (isReviewer) {
+  if (isReviewer) {
 
-    tabs.push([
+    tabs.push([
 
-      "scorecard",
+      "scorecard",
 
-      "Scorecard",
+      "Scorecard",
 
-    ]);
+    ]);
 
-  }
+  }
+if (isReviewer) {
 
+    tabs.push([
 
+      "scorecard",
 
+      "Scorecard",
 
+    ]);
 
+  }
+if (isAdmin) {
 
+    tabs.push([
 
+      "data",
 
-  if (isAdmin) {
+      "Manage Data",
 
-    tabs.push([
+    ]);
 
-      "data",
+  }
 
-      "Manage Data",
 
-    ]);
 
-  }
+  return (
 
+    <div className="p-4 space-y-4">
 
+      <h2 className="text-xl font-bold text-slate-900">
 
-  return (
+        {t("reports")}
 
-    <div className="p-4 space-y-4">
+      </h2>
 
-      <h2 className="text-xl font-bold text-slate-900">
 
-        {t("reports")}
 
-      </h2>
+      <div className="flex gap-2 overflow-x-auto no-scrollbar">
 
+        {tabs.map(([key, label]) => (
 
+          <button
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            key={key}
 
-        {tabs.map(([key, label]) => (
+            onClick={() => setTab(key)}
 
-          <button
+            className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap font-medium ${
 
-            key={key}
+              tab === key
 
-            onClick={() => setTab(key)}
+                ? "bg-slate-900 text-white"
 
-            className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap font-medium ${
+                : "bg-white text-slate-600 border border-slate-200"
 
-              tab === key
+            }`}
 
-                ? "bg-slate-900 text-white"
+          >
 
-                : "bg-white text-slate-600 border border-slate-200"
+            {label}
 
-            }`}
+          </button>
 
-          >
+        ))}
 
-            {label}
+      </div>
 
-          </button>
 
-        ))}
 
-      </div>
+      {tab === "tasks" && (
 
+        <TaskReport users={users} />
 
+      )}
 
-      {tab === "tasks" && (
 
-        <TaskReport users={users} />
 
-      )}
+      {tab === "notdone" && (
 
+        <NotDoneReport users={users} />
 
+      )}
 
-      {tab === "notdone" && (
 
-        <NotDoneReport users={users} />
 
-      )}
+      {tab === "tailor" && (
 
+        <TailorReport />
 
+      )}
 
-      {tab === "tailor" && (
 
-        <TailorReport />
 
-      )}
+      {tab === "checklists" && (
 
+        <ChecklistReport users={users} />
 
+      )}
 
-      {tab === "checklists" && (
 
-        <ChecklistReport users={users} />
 
-      )}
+      {tab === "scorecard" &&
 
+        isReviewer && (
 
+          <Scorecard users={users} />
 
-      {tab === "scorecard" &&
+        )}
+{tab === "data" &&
 
-        isReviewer && (
+        isAdmin && (
 
-          <Scorecard users={users} />
+          <DeletePriorData />
 
-        )}
-      {tab === "data" &&
+        )}
 
-        isAdmin && (
+    </div>
 
-          <DeletePriorData />
-
-        )}
-
-    </div>
-
-  );
+  );
 
 }
 
@@ -393,27 +395,27 @@ export default function Reports() {
 
 function storeQuery() {
 
-  const storeId =
+  const storeId =
 
-    localStorage.getItem(
+    localStorage.getItem(
 
-      "klassic_store"
+      "klassic_store"
 
-    );
+    );
 
 
 
-  return storeId &&
+  return storeId &&
 
-    storeId !== "all"
+    storeId !== "all"
 
-    ? {
+    ? {
 
-        store_id: storeId,
+        store_id: storeId,
 
-      }
+      }
 
-    : {};
+    : {};
 
 }
 
@@ -421,81 +423,81 @@ function storeQuery() {
 
 async function reportAggregate(
 
-  entity,
+  entity,
 
-  params = {}
+  params = {}
 
 ) {
 
-  const query = new URLSearchParams();
+  const query = new URLSearchParams();
 
 
 
-  query.set("entity", entity);
+  query.set("entity", entity);
 
 
 
-  Object.entries(params).forEach(
+  Object.entries(params).forEach(
 
-    ([key, value]) => {
+    ([key, value]) => {
 
-      if (
+      if (
 
-        value === undefined ||
+        value === undefined ||
 
-        value === null
+        value === null
 
-      ) {
+      ) {
 
-        return;
+        return;
 
-      }
-
-
-
-      if (
-
-        typeof value === "object"
-
-      ) {
-
-        query.set(
-
-          key,
-
-          JSON.stringify(value)
-
-        );
-
-      } else {
-
-        query.set(
-
-          key,
-
-          String(value)
-
-        );
-
-      }
-
-    }
-
-  );
+      }
 
 
 
-  const response =
+      if (
 
-    await apiFetch(
+        typeof value === "object"
 
-      `/api/reports/aggregate?${query.toString()}`
+      ) {
 
-    );
+        query.set(
+
+          key,
+
+          JSON.stringify(value)
+
+        );
+
+      } else {
+
+        query.set(
+
+          key,
+
+          String(value)
+
+        );
+
+      }
+
+    }
+
+  );
 
 
 
-  return response;
+  const response =
+
+    await apiFetch(
+
+      `/api/reports/aggregate?${query.toString()}`
+
+    );
+
+
+
+  return response;
 
 }
 
@@ -503,75 +505,75 @@ async function reportAggregate(
 
 async function reportList(
 
-  entity,
+  entity,
 
-  params = {}
+  params = {}
 
 ) {
 
-  const query = new URLSearchParams();
+  const query = new URLSearchParams();
 
 
 
-  query.set("entity", entity);
+  query.set("entity", entity);
 
 
 
-  Object.entries(params).forEach(
+  Object.entries(params).forEach(
 
-    ([key, value]) => {
+    ([key, value]) => {
 
-      if (
+      if (
 
-        value === undefined ||
+        value === undefined ||
 
-        value === null
+        value === null
 
-      ) {
+      ) {
 
-        return;
+        return;
 
-      }
-
-
-
-      if (
-
-        typeof value === "object"
-
-      ) {
-
-        query.set(
-
-          key,
-
-          JSON.stringify(value)
-
-        );
-
-      } else {
-
-        query.set(
-
-          key,
-
-          String(value)
-
-        );
-
-      }
-
-    }
-
-  );
+      }
 
 
 
-  return apiFetch(
+      if (
 
-    `/api/reports/list?${query.toString()}`
+        typeof value === "object"
 
-  );
+      ) {
+
+        query.set(
+
+          key,
+
+          JSON.stringify(value)
+
+        );
+
+      } else {
+
+        query.set(
+
+          key,
+
+          String(value)
+
+        );
+
+      }
+
+    }
+
+  );
+
+
+
+  return apiFetch(
+
+    `/api/reports/list?${query.toString()}`
+
+  );
 
 }
 
@@ -587,639 +589,639 @@ async function reportList(
 
 function Scorecard({ users }) {
 
-  const [rows, setRows] =
+  const [rows, setRows] =
 
-    useState([]);
+    useState([]);
 
 
 
-  const [loading, setLoading] =
+  const [loading, setLoading] =
 
-    useState(true);
+    useState(true);
 
 
 
-  useEffect(() => {
+  useEffect(() => {
 
-    (async () => {
+    (async () => {
 
-      try {
+      try {
 
-        setLoading(true);
+        setLoading(true);
 
 
 
-        const baseQuery = {
+        const baseQuery = {
 
-          ...storeQuery(),
+          ...storeQuery(),
 
-          active: {
+          active: {
 
-            $ne: true,
+            $ne: true,
 
-          },
+          },
 
-        };
+        };
 
 
 
-        const [
+        const [
 
-          totalAgg,
+          totalAgg,
 
-          completedAgg,
+          completedAgg,
 
-          onTimeAgg,
+          onTimeAgg,
 
-          escAgg,
+          escAgg,
 
-        ] = await Promise.all([
+        ] = await Promise.all([
 
-          reportAggregate(
+          reportAggregate(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query: baseQuery,
+              query: baseQuery,
 
-              groupBy:
+              groupBy:
 
-                "assigned_to_id",
+                "assigned_to_id",
 
-              count: true,
+              count: true,
 
-              limit: 100,
+              limit: 100,
 
-            }
+            }
 
-          ),
+          ),
 
 
 
-          reportAggregate(
+          reportAggregate(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...baseQuery,
+                ...baseQuery,
 
-                status: {
+                status: {
 
-                  $in: [
+                  $in: [
 
-                    "Done",
+                    "Done",
 
-                    "Approved",
+                    "Approved",
 
-                  ],
+                  ],
 
-                },
+                },
 
-              },
+              },
 
-              groupBy:
+              groupBy:
 
-                "assigned_to_id",
+                "assigned_to_id",
 
-              count: true,
+              count: true,
 
-              avg:
+              avg:
 
-                "variance_minutes",
+                "variance_minutes",
 
-              limit: 100,
+              limit: 100,
 
-            }
+            }
 
-          ),
+          ),
 
 
 
-          reportAggregate(
+          reportAggregate(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...baseQuery,
+                ...baseQuery,
 
-                on_time: true,
+                on_time: true,
 
-              },
+              },
 
-              groupBy:
+              groupBy:
 
-                "assigned_to_id",
+                "assigned_to_id",
 
-              count: true,
+              count: true,
 
-              limit: 100,
+              limit: 100,
 
-            }
+            }
 
-          ),
+          ),
 
 
 
-          reportAggregate(
+          reportAggregate(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...baseQuery,
+                ...baseQuery,
 
-                variance_minutes: {
+                variance_minutes: {
 
-                  $gt: 0,
+                  $gt: 0,
 
-                },
+                },
 
-              },
+              },
 
-              groupBy:
+              groupBy:
 
-                "assigned_to_id",
+                "assigned_to_id",
 
-              count: true,
+              count: true,
 
-              limit: 100,
+              limit: 100,
 
-            }
+            }
 
-          ),
+          ),
 
-        ]);
+        ]);
 
 
 
-        const nameMap = {};
+        const nameMap = {};
 
 
 
-        (users || []).forEach(
+        (users || []).forEach(
 
-          (user) => {
+          (user) => {
 
-            nameMap[
+            nameMap[
 
-              user.id ||
+              user.id ||
 
-                user.\_id
+                user._id
 
-            ] =
+            ] =
 
-              user.name ||
+              user.name ||
 
-              user.full_name ||
+              user.full_name ||
 
-              user.email;
+              user.email;
 
-          }
+          }
 
-        );
+        );
 
 
 
-        const completedMap = {};
+        const completedMap = {};
 
-        const varianceMap = {};
+        const varianceMap = {};
 
-        const onTimeMap = {};
+        const onTimeMap = {};
 
-        const escalationMap = {};
+        const escalationMap = {};
 
 
 
-        (
+        (
 
-          completedAgg.rows || []
+          completedAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          completedMap[
+          completedMap[
 
-            row\.assigned_to_id
+            row.assigned_to_id
 
-          ] = row\.count;
+          ] = row.count;
 
 
 
-          varianceMap[
+          varianceMap[
 
-            row\.assigned_to_id
+            row.assigned_to_id
 
-          ] =
+          ] =
 
-            row\.avg_variance_minutes;
+            row.avg_variance_minutes;
 
-        });
+        });
 
 
 
-        (
+        (
 
-          onTimeAgg.rows || []
+          onTimeAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          onTimeMap[
+          onTimeMap[
 
-            row\.assigned_to_id
+            row.assigned_to_id
 
-          ] = row\.count;
+          ] = row.count;
 
-        });
+        });
 
 
 
-        (
+        (
 
-          escAgg.rows || []
+          escAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          escalationMap[
+          escalationMap[
 
-            row\.assigned_to_id
+            row.assigned_to_id
 
-          ] = row\.count;
+          ] = row.count;
 
-        });
+        });
 
 
 
-        const output =
+        const output =
 
-          (
+          (
 
-            totalAgg.rows || []
+            totalAgg.rows || []
 
-          )
+          )
 
-            .map((row) => {
+            .map((row) => {
 
-              const uid =
+              const uid =
 
-                row\.assigned_to_id;
+                row.assigned_to_id;
 
 
 
-              const completed =
+              const completed =
 
-                completedMap[
+                completedMap[
 
-                  uid
+                  uid
 
-                ] || 0;
+                ] || 0;
 
 
 
-              const onTime =
+              const onTime =
 
-                onTimeMap[
+                onTimeMap[
 
-                  uid
+                  uid
 
-                ] || 0;
+                ] || 0;
 
 
 
-              const escalation =
+              const escalation =
 
-                escalationMap[
+                escalationMap[
 
-                  uid
+                  uid
 
-                ] || 0;
+                ] || 0;
 
 
 
-              const variance =
+              const variance =
 
-                varianceMap[
+                varianceMap[
 
-                  uid
+                  uid
 
-                ];
+                ];
 
 
 
-              const onTimePct =
+              const onTimePct =
 
-                completed
+                completed
 
-                  ? Math.round(
+                  ? Math.round(
 
-                      (onTime /
+                      (onTime /
 
-                        completed) \*
+                        completed) *
 
-                        100
+                        100
 
-                    )
+                    )
 
-                  : 0;
+                  : 0;
 
 
 
-              return {
+              return {
 
-                uid,
+                uid,
 
-                name:
+                name:
 
-                  nameMap[uid] ||
+                  nameMap[uid] ||
 
-                  "Unassigned",
+                  "Unassigned",
 
-                total:
+                total:
 
-                  row\.count,
+                  row.count,
 
-                completed,
+                completed,
 
-                onTime,
+                onTime,
 
-                escalation,
+                escalation,
 
-                onTimePct,
+                onTimePct,
 
-                variance,
+                variance,
 
-              };
+              };
 
-            })
+            })
 
-            .filter(
+            .filter(
 
-              (row) => row\.uid
+              (row) => row.uid
 
-            );
+            );
 
 
 
-        setRows(output);
+        setRows(output);
 
-      } catch (error) {
+      } catch (error) {
 
-        console.error(
+        console.error(
 
-          "Scorecard failed:",
+          "Scorecard failed:",
 
-          error
+          error
 
-        );
+        );
 
-      } finally {
+      } finally {
 
-        setLoading(false);
+        setLoading(false);
 
-      }
+      }
 
-    })();
+    })();
 
-  }, [users]);
+  }, [users]);
 
 
 
-  const fmtVariance = (
+  const fmtVariance = (
 
-    value
+    value
 
-  ) => {
+  ) => {
 
-    if (
+    if (
 
-      value == null ||
+      value == null ||
 
-      Number.isNaN(
+      Number.isNaN(
 
-        Number(value)
+        Number(value)
 
-      )
+      )
 
-    ) {
+    ) {
 
-      return "—";
+      return "—";
 
-    }
+    }
 
 
 
-    if (
+    if (
 
-      Math.abs(value) < 1
+      Math.abs(value) < 1
 
-    ) {
+    ) {
 
-      return "On time";
+      return "On time";
 
-    }
+    }
 
 
 
-    const hours =
+    const hours =
 
-      Math.abs(value) / 60;
+      Math.abs(value) / 60;
 
 
 
-    return `${hours.toFixed(
+    return `${hours.toFixed(
 
-      1
+      1
 
-    )}h ${
+    )}h ${
 
-      value > 0
+      value > 0
 
-        ? "late"
+        ? "late"
 
-        : "early"
+        : "early"
 
-    }`;
+    }`;
 
-  };
+  };
 
 
 
-  return (
+  return (
 
-    <div className="space-y-3">
+    <div className="space-y-3">
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-500">
 
-        On-time completion,
+        On-time completion,
 
-        escalations (late tasks)
+        escalations (late tasks)
 
-        and avg variance per
+        and avg variance per
 
-        manager.
+        manager.
 
-      </p>
+      </p>
 
 
 
-      {loading ? (
+      {loading ? (
 
-        <div className="text-center text-slate-400 text-sm py-4">
+        <div className="text-center text-slate-400 text-sm py-4">
 
-          Loading...
+          Loading...
 
-        </div>
+        </div>
 
-      ) : rows.length === 0 ? (
+      ) : rows.length === 0 ? (
 
-        <p className="text-center text-slate-400 text-sm py-4">
+        <p className="text-center text-slate-400 text-sm py-4">
 
-          No data
+          No data
 
-        </p>
+        </p>
 
-      ) : (
+      ) : (
 
-        <div className="space-y-2">
+        <div className="space-y-2">
 
-          {rows.map((row) => (
+          {rows.map((row) => (
 
-            <div
+            <div
 
-              key={row\.uid}
+              key={row.uid}
 
-              className="bg-white rounded-2xl p-4 border border-slate-100"
+              className="bg-white rounded-2xl p-4 border border-slate-100"
 
-            >
+            >
 
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-2">
 
-                <span className="text-sm font-semibold text-slate-800">
+                <span className="text-sm font-semibold text-slate-800">
 
-                  {row\.name}
+                  {row.name}
 
-                </span>
+                </span>
 
 
 
-                <span className="text-[11px] text-slate-400">
+                <span className="text-[11px] text-slate-400">
 
-                  {row\.total} task(s)
+                  {row.total} task(s)
 
-                </span>
+                </span>
 
-              </div>
+              </div>
 
 
 
-              <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="grid grid-cols-3 gap-2 text-center">
 
-                <div>
+                <div>
 
-                  <p className="text-lg font-bold text-green-700">
+                  <p className="text-lg font-bold text-green-700">
 
-                    {row\.onTimePct}%
+                    {row.onTimePct}%
 
-                  </p>
+                  </p>
 
 
 
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[10px] text-slate-500">
 
-                    On-time
+                    On-time
 
-                  </p>
+                  </p>
 
-                </div>
+                </div>
 
 
 
-                <div>
+                <div>
 
-                  <p className="text-lg font-bold text-red-600">
+                  <p className="text-lg font-bold text-red-600">
 
-                    {row\.escalation}
+                    {row.escalation}
 
-                  </p>
+                  </p>
 
 
 
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[10px] text-slate-500">
 
-                    Escalations
+                    Escalations
 
-                  </p>
+                  </p>
 
-                </div>
+                </div>
 
 
 
-                <div>
+                <div>
 
-                  <p className="text-sm font-bold text-slate-800 leading-6">
+                  <p className="text-sm font-bold text-slate-800 leading-6">
 
-                    {fmtVariance(
+                    {fmtVariance(
 
-                      row\.variance
+                      row.variance
 
-                    )}
+                    )}
 
-                  </p>
+                  </p>
 
 
 
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[10px] text-slate-500">
 
-                    Variance
+                    Variance
 
-                  </p>
+                  </p>
 
-                </div>
+                </div>
 
-              </div>
+              </div>
 
 
 
-              <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+              <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
 
-                <span>
+                <span>
 
-                  Completed:{" "}
+                  Completed:{" "}
 
-                  {row\.completed}
+                  {row.completed}
 
-                </span>
+                </span>
 
 
 
-                <span>
+                <span>
 
-                  On-time:{" "}
+                  On-time:{" "}
 
-                  {row\.onTime}
+                  {row.onTime}
 
-                </span>
+                </span>
 
-              </div>
+              </div>
 
-            </div>
+            </div>
 
-          ))}
+          ))}
 
-        </div>
+        </div>
 
-      )}
+      )}
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
 
@@ -1235,63 +1237,63 @@ function Scorecard({ users }) {
 
 function PeriodToggle({
 
-  unit,
+  unit,
 
-  setUnit,
+  setUnit,
 
 }) {
 
-  const { t } = useLang();
+  const { t } = useLang();
 
 
 
-  return (
+  return (
 
-    <div className="flex gap-2">
+    <div className="flex gap-2">
 
-      {[
+      {[
 
-        ["day", t("daily")],
+        ["day", t("daily")],
 
-        ["month", t("monthly")],
+        ["month", t("monthly")],
 
-      ].map(
+      ].map(
 
-        ([value, label]) => (
+        ([value, label]) => (
 
-          <button
+          <button
 
-            key={value}
+            key={value}
 
-            onClick={() =>
+            onClick={() =>
 
-              setUnit(value)
+              setUnit(value)
 
-            }
+            }
 
-            className={`text-xs px-3 py-1.5 rounded-full font-medium ${
+            className={`text-xs px-3 py-1.5 rounded-full font-medium ${
 
-              unit === value
+              unit === value
 
-                ? "bg-slate-900 text-white"
+                ? "bg-slate-900 text-white"
 
-                : "bg-white border border-slate-200 text-slate-600"
+                : "bg-white border border-slate-200 text-slate-600"
 
-            }`}
+            }`}
 
-          >
+          >
 
-            {label}
+            {label}
 
-          </button>
+          </button>
 
-        )
+        )
 
-      )}
+      )}
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
 
@@ -1299,77 +1301,77 @@ function PeriodToggle({
 
 function ManagerFilter({
 
-  users,
+  users,
 
-  value,
+  value,
 
-  onChange,
+  onChange,
 
 }) {
 
-  return (
+  return (
 
-    <select
+    <select
 
-      value={value}
+      value={value}
 
-      onChange={(event) =>
+      onChange={(event) =>
 
-        onChange(
+        onChange(
 
-          event.target.value
+          event.target.value
 
-        )
+        )
 
-      }
+      }
 
-      className="text-xs px-3 py-1.5 rounded-full border border-slate-200 bg-white max-w-[160px]"
+      className="text-xs px-3 py-1.5 rounded-full border border-slate-200 bg-white max-w-[160px]"
 
-    >
+    >
 
-      <option value="all">
+      <option value="all">
 
-        All Managers
+        All Managers
 
-      </option>
+      </option>
 
 
 
-      {users.map((user) => (
+      {users.map((user) => (
 
-        <option
+        <option
 
-          key={
+          key={
 
-            user.id ||
+            user.id ||
 
-            user.\_id
+            user._id
 
-          }
+          }
 
-          value={
+          value={
 
-            user.id ||
+            user.id ||
 
-            user.\_id
+            user._id
 
-          }
+          }
 
-        >
+        >
 
-          {user.name ||
+          {user.name ||
 
-            user.full_name ||
+            user.full_name ||
 
-            user.email}
+            user.email}
 
-        </option>
+        </option>
 
-      ))}
+      ))}
 
-    </select>
+    </select>
 
-  );
+  );
 
 }
 
@@ -1385,435 +1387,435 @@ function ManagerFilter({
 
 function TaskReport({ users }) {
 
-  const { t } = useLang();
+  const { t } = useLang();
 
 
 
-  const [unit, setUnit] =
+  const [unit, setUnit] =
 
-    useState("day");
+    useState("day");
 
 
 
-  const [rows, setRows] =
+  const [rows, setRows] =
 
-    useState([]);
+    useState([]);
 
 
 
-  const [loading, setLoading] =
+  const [loading, setLoading] =
 
-    useState(true);
+    useState(true);
 
 
 
-  const [managerId, setManagerId] =
+  const [managerId, setManagerId] =
 
-    useState("all");
+    useState("all");
 
 
 
-  useEffect(() => {
+  useEffect(() => {
 
-    (async () => {
+    (async () => {
 
-      setLoading(true);
+      setLoading(true);
 
 
 
-      try {
+      try {
 
-        const baseQuery = {
+        const baseQuery = {
 
-          ...storeQuery(),
+          ...storeQuery(),
 
-          active: {
+          active: {
 
-            $ne: true,
+            $ne: true,
 
-          },
+          },
 
-        };
+        };
 
 
 
-        if (
+        if (
 
-          managerId !== "all"
+          managerId !== "all"
 
-        ) {
+        ) {
 
-          baseQuery.assigned_to_id =
+          baseQuery.assigned_to_id =
 
-            managerId;
+            managerId;
 
-        }
+        }
 
 
 
-        const [
+        const [
 
-          totalAgg,
+          totalAgg,
 
-          doneAgg,
+          doneAgg,
 
-        ] = await Promise.all([
+        ] = await Promise.all([
 
-          reportAggregate(
+          reportAggregate(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...baseQuery,
+                ...baseQuery,
 
-                status: {
+                status: {
 
-                  $ne: "Cancelled",
+                  $ne: "Cancelled",
 
-                },
+                },
 
-              },
+              },
 
-              dateBucket: {
+              dateBucket: {
 
-                field: "due_date",
+                field: "due_date",
 
-                unit,
+                unit,
 
-              },
+              },
 
-              count: true,
+              count: true,
 
-              limit: 60,
+              limit: 60,
 
-            }
+            }
 
-          ),
+          ),
 
 
 
-          reportAggregate(
+          reportAggregate(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...baseQuery,
+                ...baseQuery,
 
-                status: {
+                status: {
 
-                  $in: [
+                  $in: [
 
-                    "Done",
+                    "Done",
 
-                    "Approved",
+                    "Approved",
 
-                  ],
+                  ],
 
-                },
+                },
 
-              },
+              },
 
-              dateBucket: {
+              dateBucket: {
 
-                field: "due_date",
+                field: "due_date",
 
-                unit,
+                unit,
 
-              },
+              },
 
-              count: true,
+              count: true,
 
-              limit: 60,
+              limit: 60,
 
-            }
+            }
 
-          ),
+          ),
 
-        ]);
+        ]);
 
 
 
-        const doneMap = {};
+        const doneMap = {};
 
 
 
-        (
+        (
 
-          doneAgg.rows || []
+          doneAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          doneMap[
+          doneMap[
 
-            row\.due_date
+            row.due_date
 
-          ] = row\.count;
+          ] = row.count;
 
-        });
+        });
 
 
 
-        setRows(
+        setRows(
 
-          (totalAgg.rows || [])
+          (totalAgg.rows || [])
 
-            .map((row) => ({
+            .map((row) => ({
 
-              key: row\.due_date,
+              key: row.due_date,
 
-              count: row\.count,
+              count: row.count,
 
-              done:
+              done:
 
-                doneMap[
+                doneMap[
 
-                  row\.due_date
+                  row.due_date
 
-                ] || 0,
+                ] || 0,
 
-              missed:
+              missed:
 
-                row\.count -
+                row.count -
 
-                (doneMap[
+                (doneMap[
 
-                  row\.due_date
+                  row.due_date
 
-                ] || 0),
+                ] || 0),
 
-            }))
+            }))
 
-            .sort((a, b) =>
+            .sort((a, b) =>
 
-              b.key.localeCompare(
+              b.key.localeCompare(
 
-                a.key
+                a.key
 
-              )
+              )
 
-            )
+            )
 
-        );
+        );
 
-      } catch (error) {
+      } catch (error) {
 
-        console.error(
+        console.error(
 
-          "Task report failed:",
+          "Task report failed:",
 
-          error
+          error
 
-        );
+        );
 
-      } finally {
+      } finally {
 
-        setLoading(false);
+        setLoading(false);
 
-      }
+      }
 
-    })();
+    })();
 
-  }, [unit, managerId]);
+  }, [unit, managerId]);
 
 
 
-  return (
+  return (
 
-    <div className="space-y-3">
+    <div className="space-y-3">
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
 
-        <PeriodToggle
+        <PeriodToggle
 
-          unit={unit}
+          unit={unit}
 
-          setUnit={setUnit}
+          setUnit={setUnit}
 
-        />
+        />
 
 
 
-        <ManagerFilter
+        <ManagerFilter
 
-          users={users}
+          users={users}
 
-          value={managerId}
+          value={managerId}
 
-          onChange={setManagerId}
+          onChange={setManagerId}
 
-        />
+        />
 
-      </div>
+      </div>
 
 
 
-      {loading ? (
+      {loading ? (
 
-        <div className="text-center text-slate-400 text-sm py-4">
+        <div className="text-center text-slate-400 text-sm py-4">
 
-          Loading...
+          Loading...
 
-        </div>
+        </div>
 
-      ) : rows.length === 0 ? (
+      ) : rows.length === 0 ? (
 
-        <p className="text-center text-slate-400 text-sm py-4">
+        <p className="text-center text-slate-400 text-sm py-4">
 
-          No data
+          No data
 
-        </p>
+        </p>
 
-      ) : (
+      ) : (
 
-        <div className="space-y-2">
+        <div className="space-y-2">
 
-          {rows.map((row) => {
+          {rows.map((row) => {
 
-            const pct = row\.count
+            const pct = row.count
 
-              ? Math.round(
+              ? Math.round(
 
-                  (row\.done /
+                  (row.done /
 
-                    row\.count) \*
+                    row.count) *
 
-                    100
+                    100
 
-                )
+                )
 
-              : 0;
+              : 0;
 
 
 
-            const label =
+            const label =
 
-              unit === "day"
+              unit === "day"
 
-                ? new Date(
+                ? new Date(
 
-                    row\.key
+                    row.key
 
-                  ).toLocaleDateString()
+                  ).toLocaleDateString()
 
-                : row\.key.slice(
+                : row.key.slice(
 
-                    0,
+                    0,
 
-                    7
+                    7
 
-                  );
+                  );
 
 
 
-            return (
+            return (
 
-              <div
+              <div
 
-                key={row\.key}
+                key={row.key}
 
-                className="bg-white rounded-2xl p-4 border border-slate-100"
+                className="bg-white rounded-2xl p-4 border border-slate-100"
 
-              >
+              >
 
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-2">
 
-                  <span className="text-sm font-semibold text-slate-800">
+                  <span className="text-sm font-semibold text-slate-800">
 
-                    {label}
+                    {label}
 
-                  </span>
+                  </span>
 
 
 
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-500">
 
-                    {row\.done}/
+                    {row.done}/
 
-                    {row\.count}
+                    {row.count}
 
 
 
-                    {row\.missed >
+                    {row.missed >
 
-                    0
+                    0
 
-                      ? ` · ${row\.missed} missed`
+                      ? ` · ${row.missed} missed`
 
-                      : ""}
+                      : ""}
 
-                  </span>
+                  </span>
 
-                </div>
+                </div>
 
 
 
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
 
-                  <div
+                  <div
 
-                    className="h-full bg-green-600 rounded-full"
+                    className="h-full bg-green-600 rounded-full"
 
-                    style={{
+                    style={{
 
-                      width: `${pct}%`,
+                      width: `${pct}%`,
 
-                    }}
+                    }}
 
-                  />
+                  />
 
-                </div>
+                </div>
 
 
 
-                <p className="text-[11px] mt-1">
+                <p className="text-[11px] mt-1">
 
-                  {row\.missed >
+                  {row.missed >
 
-                  0 ? (
+                  0 ? (
 
-                    <span className="text-red-600 font-medium">
+                    <span className="text-red-600 font-medium">
 
-                      {row\.missed} not done
+                      {row.missed} not done
 
-                    </span>
+                    </span>
 
-                  ) : (
+                  ) : (
 
-                    <span className="text-slate-400">
+                    <span className="text-slate-400">
 
-                      {t(
+                      {t(
 
-                        "completed"
+                        "completed"
 
-                      )}
+                      )}
 
-                      : {pct}%
+                      : {pct}%
 
-                    </span>
+                    </span>
 
-                  )}
+                  )}
 
-                </p>
+                </p>
 
-              </div>
+              </div>
 
-            );
+            );
 
-          })}
+          })}
 
-        </div>
+        </div>
 
-      )}
+      )}
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
 
@@ -1829,339 +1831,339 @@ function TaskReport({ users }) {
 
 function NotDoneReport({
 
-  users,
+  users,
 
 }) {
 
-  const [rows, setRows] =
+  const [rows, setRows] =
 
-    useState([]);
+    useState([]);
 
 
 
-  const [loading, setLoading] =
+  const [loading, setLoading] =
 
-    useState(true);
+    useState(true);
 
 
 
-  const [managerId, setManagerId] =
+  const [managerId, setManagerId] =
 
-    useState("all");
+    useState("all");
 
 
 
-  useEffect(() => {
+  useEffect(() => {
 
-    (async () => {
+    (async () => {
 
-      setLoading(true);
+      setLoading(true);
 
 
 
-      try {
+      try {
 
-        const query = {
+        const query = {
 
-          ...storeQuery(),
+          ...storeQuery(),
 
 
 
-          active: {
+          active: {
 
-            $ne: true,
+            $ne: true,
 
-          },
+          },
 
 
 
-          status: {
+          status: {
 
-            $nin: [
+            $nin: [
 
-              "Done",
+              "Done",
 
-              "Approved",
+              "Approved",
 
-              "Cancelled",
+              "Cancelled",
 
-              "Rejected",
+              "Rejected",
 
-            ],
+            ],
 
-          },
+          },
 
 
 
-          due_date: {
+          due_date: {
 
-            $lt:
+            $lt:
 
-              new Date().toISOString(),
+              new Date().toISOString(),
 
-          },
+          },
 
-        };
+        };
 
 
 
-        if (
+        if (
 
-          managerId !== "all"
+          managerId !== "all"
 
-        ) {
+        ) {
 
-          query.assigned_to_id =
+          query.assigned_to_id =
 
-            managerId;
+            managerId;
 
-        }
+        }
 
 
 
-        const response =
+        const response =
 
-          await reportList(
+          await reportList(
 
-            "Task",
+            "Task",
 
-            {
+            {
 
-              query,
+              query,
 
-              sort: "-due_date",
+              sort: "-due_date",
 
-              limit: 100,
+              limit: 100,
 
-            }
+            }
 
-          );
+          );
 
 
 
-        const nameMap = {};
+        const nameMap = {};
 
 
 
-        (
+        (
 
-          users || []
+          users || []
 
-        ).forEach((user) => {
+        ).forEach((user) => {
 
-          nameMap[
+          nameMap[
 
-            user.id ||
+            user.id ||
 
-              user.\_id
+              user._id
 
-          ] =
+          ] =
 
-            user.name ||
+            user.name ||
 
-            user.full_name ||
+            user.full_name ||
 
-            user.email;
+            user.email;
 
-        });
+        });
 
 
 
-        setRows(
+        setRows(
 
-          (
+          (
 
-            response.items ||
+            response.items ||
 
-            response.tasks ||
+            response.tasks ||
 
-            []
+            []
 
-          ).map((row) => ({
+          ).map((row) => ({
 
-            ...row,
+            ...row,
 
 
 
-            \_name:
+            _name:
 
-              nameMap[
+              nameMap[
 
-                row\.assigned_to_id
+                row.assigned_to_id
 
-              ] ||
+              ] ||
 
-              row\.assigned_to_name ||
+              row.assigned_to_name ||
 
-              "Unassigned",
+              "Unassigned",
 
-          }))
+          }))
 
-        );
+        );
 
-      } catch (error) {
+      } catch (error) {
 
-        console.error(
+        console.error(
 
-          "Not done report failed:",
+          "Not done report failed:",
 
-          error
+          error
 
-        );
+        );
 
-      } finally {
+      } finally {
 
-        setLoading(false);
+        setLoading(false);
 
-      }
+      }
 
-    })();
+    })();
 
-  }, [managerId, users]);
+  }, [managerId, users]);
 
 
 
-  return (
+  return (
 
-    <div className="space-y-3">
+    <div className="space-y-3">
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
 
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-500">
 
-          Tasks past their
+          Tasks past their
 
-          deadline, not completed
+          deadline, not completed
 
-          — removed from today's
+          — removed from today's
 
-          view.
+          view.
 
-        </p>
+        </p>
 
 
 
-        <ManagerFilter
+        <ManagerFilter
 
-          users={users}
+          users={users}
 
-          value={managerId}
+          value={managerId}
 
-          onChange={setManagerId}
+          onChange={setManagerId}
 
-        />
+        />
 
-      </div>
+      </div>
 
 
 
-      {loading ? (
+      {loading ? (
 
-        <div className="text-center text-slate-400 text-sm py-4">
+        <div className="text-center text-slate-400 text-sm py-4">
 
-          Loading...
+          Loading...
 
-        </div>
+        </div>
 
-      ) : rows.length === 0 ? (
+      ) : rows.length === 0 ? (
 
-        <p className="text-center text-slate-400 text-sm py-4">
+        <p className="text-center text-slate-400 text-sm py-4">
 
-          No missed tasks
+          No missed tasks
 
-        </p>
+        </p>
 
-      ) : (
+      ) : (
 
-        <div className="space-y-2">
+        <div className="space-y-2">
 
-          {rows.map((row) => (
+          {rows.map((row) => (
 
-            <div
+            <div
 
-              key={
+              key={
 
-                row\.id ||
+                row.id ||
 
-                row.\_id
+                row._id
 
-              }
+              }
 
-              className="bg-white rounded-2xl p-3 border border-red-100"
+              className="bg-white rounded-2xl p-3 border border-red-100"
 
-            >
+            >
 
-              <p className="text-sm font-semibold text-slate-800">
+              <p className="text-sm font-semibold text-slate-800">
 
-                {row\.title}
+                {row.title}
 
-              </p>
+              </p>
 
 
 
-              <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center justify-between mt-1">
 
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-slate-500">
 
-                  {row.\_name}
+                  {row._name}
 
 
 
-                  {row\.store_name
+                  {row.store_name
 
-                    ? ` · ${row\.store_name}`
+                    ? ` · ${row.store_name}`
 
-                    : ""}
+                    : ""}
 
-                </span>
+                </span>
 
 
 
-                <span className="text-[11px] text-red-600 font-medium">
+                <span className="text-[11px] text-red-600 font-medium">
 
-                  Due{" "}
+                  Due{" "}
 
-                  {row\.due_date
+                  {row.due_date
 
-                    ? new Date(
+                    ? new Date(
 
-                        row\.due_date
+                        row.due_date
 
-                      ).toLocaleString(
+                      ).toLocaleString(
 
-                        [],
+                        [],
 
-                        {
+                        {
 
-                          day: "numeric",
+                          day: "numeric",
 
-                          month: "short",
+                          month: "short",
 
-                          hour: "2-digit",
+                          hour: "2-digit",
 
-                          minute: "2-digit",
+                          minute: "2-digit",
 
-                        }
+                        }
 
-                      )
+                      )
 
-                    : "—"}
+                    : "—"}
 
-                </span>
+                </span>
 
-              </div>
+              </div>
 
-            </div>
+            </div>
 
-          ))}
+          ))}
 
-        </div>
+        </div>
 
-      )}
+      )}
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
 
@@ -2177,537 +2179,537 @@ function NotDoneReport({
 
 function TailorReport() {
 
-  const { t } = useLang();
+  const { t } = useLang();
 
 
 
-  const [unit, setUnit] =
+  const [unit, setUnit] =
 
-    useState("month");
+    useState("month");
 
 
 
-  const [rows, setRows] =
+  const [rows, setRows] =
 
-    useState([]);
+    useState([]);
 
 
 
-  const [loading, setLoading] =
+  const [loading, setLoading] =
 
-    useState(true);
+    useState(true);
 
 
 
-  useEffect(() => {
+  useEffect(() => {
 
-    (async () => {
+    (async () => {
 
-      setLoading(true);
+      setLoading(true);
 
 
 
-      try {
+      try {
 
-        const query =
+        const query =
 
-          storeQuery();
+          storeQuery();
 
 
 
-        const [
+        const [
 
-          pantsAgg,
+          pantsAgg,
 
-          onTimeAgg,
+          onTimeAgg,
 
-          alterAgg,
+          alterAgg,
 
-        ] = await Promise.all([
+        ] = await Promise.all([
 
-          reportAggregate(
+          reportAggregate(
 
-            "PantStitch",
+            "PantStitch",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...query,
+                ...query,
 
-                status: {
+                status: {
 
-                  $in: [
+                  $in: [
 
-                    "Completed",
+                    "Completed",
 
-                    "Delivered",
+                    "Delivered",
 
-                  ],
+                  ],
 
-                },
+                },
 
-              },
+              },
 
 
 
-              dateBucket: {
+              dateBucket: {
 
-                field:
+                field:
 
-                  "completed_at",
+                  "completed_at",
 
-                unit,
+                unit,
 
-              },
+              },
 
 
 
-              count: true,
+              count: true,
 
-              limit: 60,
+              limit: 60,
 
-            }
+            }
 
-          ),
+          ),
 
 
 
-          reportAggregate(
+          reportAggregate(
 
-            "PantStitch",
+            "PantStitch",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...query,
+                ...query,
 
-                on_time: true,
+                on_time: true,
 
-              },
+              },
 
 
 
-              dateBucket: {
+              dateBucket: {
 
-                field:
+                field:
 
-                  "completed_at",
+                  "completed_at",
 
-                unit,
+                unit,
 
-              },
+              },
 
 
 
-              count: true,
+              count: true,
 
-              limit: 60,
+              limit: 60,
 
-            }
+            }
 
-          ),
+          ),
 
 
 
-          reportAggregate(
+          reportAggregate(
 
-            "Alteration",
+            "Alteration",
 
-            {
+            {
 
-              query: {
+              query: {
 
-                ...query,
+                ...query,
 
-                status: {
+                status: {
 
-                  $in: [
+                  $in: [
 
-                    "Completed",
+                    "Completed",
 
-                    "Delivered",
+                    "Delivered",
 
-                  ],
+                  ],
 
-                },
+                },
 
-              },
+              },
 
 
 
-              dateBucket: {
+              dateBucket: {
 
-                field:
+                field:
 
-                  "completed_at",
+                  "completed_at",
 
-                unit,
+                unit,
 
-              },
+              },
 
 
 
-              count: true,
+              count: true,
 
-              limit: 60,
+              limit: 60,
 
-            }
+            }
 
-          ),
+          ),
 
-        ]);
+        ]);
 
 
 
-        const onTimeMap = {};
+        const onTimeMap = {};
 
-        const alterMap = {};
+        const alterMap = {};
 
-        const pantsMap = {};
+        const pantsMap = {};
 
 
 
-        (
+        (
 
-          onTimeAgg.rows || []
+          onTimeAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          onTimeMap[
+          onTimeMap[
 
-            row\.completed_at
+            row.completed_at
 
-          ] = row\.count;
+          ] = row.count;
 
-        });
+        });
 
 
 
-        (
+        (
 
-          alterAgg.rows || []
+          alterAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          alterMap[
+          alterMap[
 
-            row\.completed_at
+            row.completed_at
 
-          ] = row\.count;
+          ] = row.count;
 
-        });
+        });
 
 
 
-        (
+        (
 
-          pantsAgg.rows || []
+          pantsAgg.rows || []
 
-        ).forEach((row) => {
+        ).forEach((row) => {
 
-          pantsMap[
+          pantsMap[
 
-            row\.completed_at
+            row.completed_at
 
-          ] = row\.count;
+          ] = row.count;
 
-        });
+        });
 
 
 
-        const keys = [
+        const keys = [
 
-          ...new Set([
+          ...new Set([
 
-            ...Object.keys(
+            ...Object.keys(
 
-              onTimeMap
+              onTimeMap
 
-            ),
+            ),
 
-            ...Object.keys(
+            ...Object.keys(
 
-              pantsMap
+              pantsMap
 
-            ),
+            ),
 
-            ...Object.keys(
+            ...Object.keys(
 
-              alterMap
+              alterMap
 
-            ),
+            ),
 
-          ]),
+          ]),
 
-        ].sort().reverse();
+        ].sort().reverse();
 
 
 
-        setRows(
+        setRows(
 
-          keys.map((key) => ({
+          keys.map((key) => ({
 
-            key,
+            key,
 
 
 
-            pants:
+            pants:
 
-              pantsMap[key] ||
+              pantsMap[key] ||
 
-              0,
+              0,
 
 
 
-            onTime:
+            onTime:
 
-              onTimeMap[key] ||
+              onTimeMap[key] ||
 
-              0,
+              0,
 
 
 
-            alter:
+            alter:
 
-              alterMap[key] ||
+              alterMap[key] ||
 
-              0,
+              0,
 
-          }))
+          }))
 
-        );
+        );
 
-      } catch (error) {
+      } catch (error) {
 
-        console.error(
+        console.error(
 
-          "Tailor report failed:",
+          "Tailor report failed:",
 
-          error
+          error
 
-        );
+        );
 
-      } finally {
+      } finally {
 
-        setLoading(false);
+        setLoading(false);
 
-      }
+      }
 
-    })();
+    })();
 
-  }, [unit]);
+  }, [unit]);
 
 
 
-  return (
+  return (
 
-    <div className="space-y-3">
+    <div className="space-y-3">
 
-      <PeriodToggle
+      <PeriodToggle
 
-        unit={unit}
+        unit={unit}
 
-        setUnit={setUnit}
+        setUnit={setUnit}
 
-      />
+      />
 
 
 
-      {loading ? (
+      {loading ? (
 
-        <div className="text-center text-slate-400 text-sm py-4">
+        <div className="text-center text-slate-400 text-sm py-4">
 
-          Loading...
+          Loading...
 
-        </div>
+        </div>
 
-      ) : rows.length === 0 ? (
+      ) : rows.length === 0 ? (
 
-        <p className="text-center text-slate-400 text-sm py-4">
+        <p className="text-center text-slate-400 text-sm py-4">
 
-          No data
+          No data
 
-        </p>
+        </p>
 
-      ) : (
+      ) : (
 
-        <div className="space-y-2">
+        <div className="space-y-2">
 
-          {rows.map((row) => {
+          {rows.map((row) => {
 
-            const onTimePct =
+            const onTimePct =
 
-              row\.pants
+              row.pants
 
-                ? Math.round(
+                ? Math.round(
 
-                    (row\.onTime /
+                    (row.onTime /
 
-                      row\.pants) \*
+                      row.pants) *
 
-                      100
+                      100
 
-                  )
+                  )
 
-                : 0;
+                : 0;
 
 
 
-            const label =
+            const label =
 
-              unit === "day"
+              unit === "day"
 
-                ? new Date(
+                ? new Date(
 
-                    row\.key
+                    row.key
 
-                  ).toLocaleDateString()
+                  ).toLocaleDateString()
 
-                : row\.key.slice(
+                : row.key.slice(
 
-                    0,
+                    0,
 
-                    7
+                    7
 
-                  );
+                  );
 
 
 
-            return (
+            return (
 
-              <div
+              <div
 
-                key={row\.key}
+                key={row.key}
 
-                className="bg-white rounded-2xl p-4 border border-slate-100"
+                className="bg-white rounded-2xl p-4 border border-slate-100"
 
-              >
+              >
 
-                <p className="text-sm font-semibold text-slate-800 mb-2">
+                <p className="text-sm font-semibold text-slate-800 mb-2">
 
-                  {label}
+                  {label}
 
-                </p>
+                </p>
 
 
 
-                <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="grid grid-cols-3 gap-2 text-center">
 
-                  <div>
+                  <div>
 
-                    <p className="text-lg font-bold text-slate-900">
+                    <p className="text-lg font-bold text-slate-900">
 
-                      {row\.pants}
+                      {row.pants}
 
-                    </p>
+                    </p>
 
 
 
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-[10px] text-slate-500">
 
-                      {t(
+                      {t(
 
-                        "pantsDone"
+                        "pantsDone"
 
-                      )}
+                      )}
 
-                    </p>
+                    </p>
 
-                  </div>
+                  </div>
 
 
 
-                  <div>
+                  <div>
 
-                    <p className="text-lg font-bold text-green-700">
+                    <p className="text-lg font-bold text-green-700">
 
-                      {row\.onTime}
+                      {row.onTime}
 
-                    </p>
+                    </p>
 
 
 
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-[10px] text-slate-500">
 
-                      {t(
+                      {t(
 
-                        "onTime"
+                        "onTime"
 
-                      )}
+                      )}
 
-                    </p>
+                    </p>
 
-                  </div>
+                  </div>
 
 
 
-                  <div>
+                  <div>
 
-                    <p className="text-lg font-bold text-purple-700">
+                    <p className="text-lg font-bold text-purple-700">
 
-                      {row\.alter}
+                      {row.alter}
 
-                    </p>
+                    </p>
 
 
 
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-[10px] text-slate-500">
 
-                      {t(
+                      {t(
 
-                        "alterations"
+                        "alterations"
 
-                      )}
+                      )}
 
-                    </p>
+                    </p>
 
-                  </div>
+                  </div>
 
-                </div>
+                </div>
 
 
 
-                <div className="mt-2 w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="mt-2 w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
 
-                  <div
+                  <div
 
-                    className="h-full bg-green-600 rounded-full"
+                    className="h-full bg-green-600 rounded-full"
 
-                    style={{
+                    style={{
 
-                      width: `${onTimePct}%`,
+                      width: `${onTimePct}%`,
 
-                    }}
+                    }}
 
-                  />
+                  />
 
-                </div>
+                </div>
 
 
 
-                <p className="text-[11px] text-slate-400 mt-1">
+                <p className="text-[11px] text-slate-400 mt-1">
 
-                  {t("onTime")}:{" "}
+                  {t("onTime")}:{" "}
 
-                  {onTimePct}%
+                  {onTimePct}%
 
-                </p>
+                </p>
 
-              </div>
+              </div>
 
-            );
+            );
 
-          })}
+          })}
 
-        </div>
+        </div>
 
-      )}
+      )}
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
 
@@ -2723,539 +2725,539 @@ function TailorReport() {
 
 function ChecklistReport({
 
-  users,
+  users,
 
 }) {
 
-  const { t } = useLang();
+  const { t } = useLang();
 
 
 
-  const [unit, setUnit] =
+  const [unit, setUnit] =
 
-    useState("day");
+    useState("day");
 
 
 
-  const [rows, setRows] =
+  const [rows, setRows] =
 
-    useState([]);
+    useState([]);
 
 
 
-  const [loading, setLoading] =
+  const [loading, setLoading] =
 
-    useState(true);
+    useState(true);
 
 
 
-  const [managerId, setManagerId] =
+  const [managerId, setManagerId] =
 
-    useState("all");
+    useState("all");
 
 
 
-  useEffect(() => {
+  useEffect(() => {
 
-    (async () => {
+    (async () => {
 
-      setLoading(true);
+      setLoading(true);
 
 
 
-      try {
+      try {
 
-        const query =
+        const query =
 
-          storeQuery();
+          storeQuery();
 
 
 
-        const periodField =
+        const periodField =
 
-          unit === "day"
+          unit === "day"
 
-            ? "date"
+            ? "date"
 
-            : "month";
+            : "month";
 
 
 
-        let aggregateRows = [];
+        let aggregateRows = [];
 
 
 
-        if (
+        if (
 
-          managerId === "all"
+          managerId === "all"
 
-        ) {
+        ) {
 
-          const response =
+          const response =
 
-            await reportAggregate(
+            await reportAggregate(
 
-              "ChecklistEntry",
+              "ChecklistEntry",
 
-              {
+              {
 
-                query,
+                query,
 
 
 
-                groupBy: [
+                groupBy: [
 
-                  periodField,
+                  periodField,
 
-                  "manager_id",
+                  "manager_id",
 
-                ],
+                ],
 
 
 
-                avg:
+                avg:
 
-                  "completed_pct",
+                  "completed_pct",
 
 
 
-                count: true,
+                count: true,
 
 
 
-                limit: 300,
+                limit: 300,
 
-              }
+              }
 
-            );
+            );
 
 
 
-          aggregateRows =
+          aggregateRows =
 
-            response.rows || [];
+            response.rows || [];
 
-        } else {
+        } else {
 
-          query.manager_id =
+          query.manager_id =
 
-            managerId;
+            managerId;
 
 
 
-          const response =
+          const response =
 
-            await reportAggregate(
+            await reportAggregate(
 
-              "ChecklistEntry",
+              "ChecklistEntry",
 
-              {
+              {
 
-                query,
+                query,
 
 
 
-                groupBy:
+                groupBy:
 
-                  periodField,
+                  periodField,
 
 
 
-                avg:
+                avg:
 
-                  "completed_pct",
+                  "completed_pct",
 
 
 
-                count: true,
+                count: true,
 
 
 
-                sort: `-${periodField}`,
+                sort: `-${periodField}`,
 
 
 
-                limit: 60,
+                limit: 60,
 
-              }
+              }
 
-            );
+            );
 
 
 
-          aggregateRows = (
+          aggregateRows = (
 
-            response.rows || []
+            response.rows || []
 
-          ).map(
+          ).map(
 
-            (row) => ({
+            (row) => ({
 
-              ...row,
+              ...row,
 
-              manager_id:
+              manager_id:
 
-                managerId,
+                managerId,
 
-            })
+            })
 
-          );
+          );
 
-        }
+        }
 
 
 
-        const nameMap = {};
+        const nameMap = {};
 
 
 
-        (
+        (
 
-          users || []
+          users || []
 
-        ).forEach((user) => {
+        ).forEach((user) => {
 
-          nameMap[
+          nameMap[
 
-            user.id ||
+            user.id ||
 
-              user.\_id
+              user._id
 
-          ] =
+          ] =
 
-            user.name ||
+            user.name ||
 
-            user.full_name ||
+            user.full_name ||
 
-            user.email;
+            user.email;
 
-        });
+        });
 
 
 
-        const periods = {};
+        const periods = {};
 
 
 
-        aggregateRows.forEach(
+        aggregateRows.forEach(
 
-          (row) => {
+          (row) => {
 
-            const period =
+            const period =
 
-              row[
+              row[
 
-                periodField
+                periodField
 
-              ];
+              ];
 
 
 
-            if (!period) {
+            if (!period) {
 
-              return;
+              return;
 
-            }
+            }
 
 
 
-            if (
+            if (
 
-              !periods[period]
+              !periods[period]
 
-            ) {
+            ) {
 
-              periods[period] = {
+              periods[period] = {
 
-                period,
+                period,
 
-                rows: [],
+                rows: [],
 
-              };
+              };
 
-            }
+            }
 
 
 
-            periods[
+            periods[
 
-              period
+              period
 
-            ].rows.push({
+            ].rows.push({
 
-              manager_id:
+              manager_id:
 
-                row\.manager_id,
+                row.manager_id,
 
 
 
-              name:
+              name:
 
-                nameMap[
+                nameMap[
 
-                  row\.manager_id
+                  row.manager_id
 
-                ] ||
+                ] ||
 
-                row\.manager_name ||
+                row.manager_name ||
 
-                "—",
+                "—",
 
 
 
-              pct: Math.round(
+              pct: Math.round(
 
-                row\.avg_completed_pct ||
+                row.avg_completed_pct ||
 
-                  0
+                  0
 
-              ),
+              ),
 
 
 
-              count:
+              count:
 
-                row\.count,
+                row.count,
 
-            });
+            });
 
-          }
+          }
 
-        );
+        );
 
 
 
-        setRows(
+        setRows(
 
-          Object.values(
+          Object.values(
 
-            periods
+            periods
 
-          ).sort((a, b) =>
+          ).sort((a, b) =>
 
-            b.period.localeCompare(
+            b.period.localeCompare(
 
-              a.period
+              a.period
 
-            )
+            )
 
-          )
+          )
 
-        );
+        );
 
-      } catch (error) {
+      } catch (error) {
 
-        console.error(
+        console.error(
 
-          "Checklist report failed:",
+          "Checklist report failed:",
 
-          error
+          error
 
-        );
+        );
 
-      } finally {
+      } finally {
 
-        setLoading(false);
+        setLoading(false);
 
-      }
+      }
 
-    })();
+    })();
 
-  }, [
+  }, [
 
-    unit,
+    unit,
 
-    managerId,
+    managerId,
 
-    users,
+    users,
 
-  ]);
+  ]);
 
 
 
-  return (
+  return (
 
-    <div className="space-y-3">
+    <div className="space-y-3">
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
 
-        <PeriodToggle
+        <PeriodToggle
 
-          unit={unit}
+          unit={unit}
 
-          setUnit={setUnit}
+          setUnit={setUnit}
 
-        />
+        />
 
 
 
-        <ManagerFilter
+        <ManagerFilter
 
-          users={users}
+          users={users}
 
-          value={managerId}
+          value={managerId}
 
-          onChange={setManagerId}
+          onChange={setManagerId}
 
-        />
+        />
 
-      </div>
+      </div>
 
 
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-500">
 
-        Day-wise / month-wise
+        Day-wise / month-wise
 
-        completion % per manager.
+        completion % per manager.
 
-      </p>
+      </p>
 
 
 
-      {loading ? (
+      {loading ? (
 
-        <div className="text-center text-slate-400 text-sm py-4">
+        <div className="text-center text-slate-400 text-sm py-4">
 
-          Loading...
+          Loading...
 
-        </div>
+        </div>
 
-      ) : rows.length === 0 ? (
+      ) : rows.length === 0 ? (
 
-        <p className="text-center text-slate-400 text-sm py-4">
+        <p className="text-center text-slate-400 text-sm py-4">
 
-          No data
+          No data
 
-        </p>
+        </p>
 
-      ) : (
+      ) : (
 
-        <div className="space-y-2">
+        <div className="space-y-2">
 
-          {rows.map((period) => (
+          {rows.map((period) => (
 
-            <div
+            <div
 
-              key={
+              key={
 
-                period.period
+                period.period
 
-              }
+              }
 
-              className="bg-white rounded-2xl p-4 border border-slate-100"
+              className="bg-white rounded-2xl p-4 border border-slate-100"
 
-            >
+            >
 
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-2">
 
-                <span className="text-sm font-semibold text-slate-800">
+                <span className="text-sm font-semibold text-slate-800">
 
-                  {unit === "day"
+                  {unit === "day"
 
-                    ? new Date(
+                    ? new Date(
 
-                        period.period
+                        period.period
 
-                      ).toLocaleDateString()
+                      ).toLocaleDateString()
 
-                    : period.period}
+                    : period.period}
 
-                </span>
+                </span>
 
 
 
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-slate-500">
 
-                  {
+                  {
 
-                    period.rows
+                    period.rows
 
-                      .length
+                      .length
 
-                  }{" "}
+                  }{" "}
 
-                  manager(s)
+                  manager(s)
 
-                </span>
+                </span>
 
-              </div>
+              </div>
 
 
 
-              <div className="space-y-1.5">
+              <div className="space-y-1.5">
 
-                {period.rows.map(
+                {period.rows.map(
 
-                  (row) => (
+                  (row) => (
 
-                    <div
+                    <div
 
-                      key={
+                      key={
 
-                        row\.manager_id
+                        row.manager_id
 
-                      }
+                      }
 
-                      className="flex items-center justify-between gap-2 text-sm"
+                      className="flex items-center justify-between gap-2 text-sm"
 
-                    >
+                    >
 
-                      <span className="text-slate-700 flex-1 truncate">
+                      <span className="text-slate-700 flex-1 truncate">
 
-                        {row\.name}
+                        {row.name}
 
-                      </span>
+                      </span>
 
 
 
-                      <div className="flex items-center gap-2 w-32">
+                      <div className="flex items-center gap-2 w-32">
 
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
 
-                          <div
+                          <div
 
-                            className="h-full bg-blue-600 rounded-full"
+                            className="h-full bg-blue-600 rounded-full"
 
-                            style={{
+                            style={{
 
-                              width: `${row\.pct}%`,
+                              width: `${row.pct}%`,
 
-                            }}
+                            }}
 
-                          />
+                          />
 
-                        </div>
+                        </div>
 
 
 
-                        <span className="text-xs font-semibold text-slate-700 w-9 text-right">
+                        <span className="text-xs font-semibold text-slate-700 w-9 text-right">
 
-                          {row\.pct}%
+                          {row.pct}%
 
-                        </span>
+                        </span>
 
-                      </div>
+                      </div>
 
-                    </div>
+                    </div>
 
-                  )
+                  )
 
-                )}
+                )}
 
-              </div>
+              </div>
 
-            </div>
+            </div>
 
-          ))}
+          ))}
 
-        </div>
+        </div>
 
-      )}
+      )}
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
 
@@ -3271,410 +3273,410 @@ function ChecklistReport({
 
 function DeletePriorData() {
 
-  const [cutoff, setCutoff] =
+  const [cutoff, setCutoff] =
 
-    useState("");
+    useState("");
 
 
 
-  const [busy, setBusy] =
+  const [busy, setBusy] =
 
-    useState(false);
+    useState(false);
 
 
 
-  const run = async (
+  const run = async (
 
-    entity,
+    entity,
 
-    query,
+    query,
 
-    label
+    label
 
-  ) => {
+  ) => {
 
-    if (!cutoff) {
+    if (!cutoff) {
 
-      toast.error(
+      toast.error(
 
-        "Pick a cutoff date first"
+        "Pick a cutoff date first"
 
-      );
+      );
 
-      return;
+      return;
 
-    }
+    }
 
 
 
-    if (
+    if (
 
-      !window\.confirm(
+      !window.confirm(
 
-        `Permanently delete all completed ${label} records before ${cutoff}? This cannot be undone.`
+        `Permanently delete all completed ${label} records before ${cutoff}? This cannot be undone.`
 
-      )
+      )
 
-    ) {
+    ) {
 
-      return;
+      return;
 
-    }
+    }
 
 
 
-    setBusy(true);
+    setBusy(true);
 
 
 
-    try {
+    try {
 
-      const response =
+      const response =
 
-        await apiFetch(
+        await apiFetch(
 
-          "/api/reports/delete",
+          "/api/reports/delete",
 
-          {
+          {
 
-            method: "POST",
+            method: "POST",
 
-            body: JSON.stringify({
+            body: JSON.stringify({
 
-              entity,
+              entity,
 
-              query,
+              query,
 
-            }),
+            }),
 
-          }
+          }
 
-        );
+        );
 
 
 
-      const total =
+      const total =
 
-        response.count || 0;
+        response.count || 0;
 
 
 
-      toast.success(
+      toast.success(
 
-        total > 0
+        total > 0
 
-          ? `Deleted ${total} ${label} record(s)`
+          ? `Deleted ${total} ${label} record(s)`
 
-          : `Completed ${label} records cleared`
+          : `Completed ${label} records cleared`
 
-      );
+      );
 
-    } catch (error) {
+    } catch (error) {
 
-      toast.error(
+      toast.error(
 
-        "Failed: " +
+        "Failed: " +
 
-          (error.message ||
+          (error.message ||
 
-            "error")
+            "error")
 
-      );
+      );
 
-    } finally {
+    } finally {
 
-      setBusy(false);
+      setBusy(false);
 
-    }
+    }
 
-  };
+  };
 
 
 
-  const cutoffIso = cutoff
+  const cutoffIso = cutoff
 
-    ? new Date(
+    ? new Date(
 
-        cutoff +
+        cutoff +
 
-          "T00:00:00"
+          "T00:00:00"
 
-      ).toISOString()
+      ).toISOString()
 
-    : "";
+    : "";
 
 
 
-  const buttons = [
+  const buttons = [
 
-    {
+    {
 
-      entity: "Task",
+      entity: "Task",
 
-      label: "Tasks",
+      label: "Tasks",
 
 
 
-      query: {
+      query: {
 
-        status: {
+        status: {
 
-          $in: [
+          $in: [
 
-            "Done",
+            "Done",
 
-            "Approved",
+            "Approved",
 
-          ],
+          ],
 
-        },
+        },
 
 
 
-        completed_at: {
+        completed_at: {
 
-          $lt: cutoffIso,
+          $lt: cutoffIso,
 
-        },
+        },
 
-      },
+      },
 
-    },
+    },
 
 
 
-    {
+    {
 
-      entity: "Alteration",
+      entity: "Alteration",
 
-      label: "Alterations",
+      label: "Alterations",
 
 
 
-      query: {
+      query: {
 
-        status: {
+        status: {
 
-          $in: [
+          $in: [
 
-            "Completed",
+            "Completed",
 
-            "Delivered",
+            "Delivered",
 
-          ],
+          ],
 
-        },
+        },
 
 
 
-        completed_at: {
+        completed_at: {
 
-          $lt: cutoffIso,
+          $lt: cutoffIso,
 
-        },
+        },
 
-      },
+      },
 
-    },
+    },
 
 
 
-    {
+    {
 
-      entity: "PantStitch",
+      entity: "PantStitch",
 
-      label: "Pant Stitching",
+      label: "Pant Stitching",
 
 
 
-      query: {
+      query: {
 
-        status: {
+        status: {
 
-          $in: [
+          $in: [
 
-            "Completed",
+            "Completed",
 
-            "Delivered",
+            "Delivered",
 
-          ],
+          ],
 
-        },
+        },
 
 
 
-        completed_at: {
+        completed_at: {
 
-          $lt: cutoffIso,
+          $lt: cutoffIso,
 
-        },
+        },
 
-      },
+      },
 
-    },
+    },
 
 
 
-    {
+    {
 
-      entity:
+      entity:
 
-        "ChecklistEntry",
+        "ChecklistEntry",
 
 
 
-      label:
+      label:
 
-        "Checklist Entries",
+        "Checklist Entries",
 
 
 
-      query: {
+      query: {
 
-        completed_pct: 100,
+        completed_pct: 100,
 
 
 
-        date: {
+        date: {
 
-          $lt: cutoff,
+          $lt: cutoff,
 
-        },
+        },
 
-      },
+      },
 
-    },
+    },
 
-  ];
+  ];
 
 
 
-  return (
+  return (
 
-    <div className="space-y-3">
+    <div className="space-y-3">
 
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-2">
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-2">
 
-        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
 
 
 
-        <p className="text-xs text-amber-700">
+        <p className="text-xs text-amber-700">
 
-          Permanently deletes
+          Permanently deletes
 
-          completed records older
+          completed records older
 
-          than the cutoff date.
+          than the cutoff date.
 
-          Only Done/Approved/
+          Only Done/Approved/
 
-          Delivered records are
+          Delivered records are
 
-          removed — active records
+          removed — active records
 
-          are kept. This cannot be
+          are kept. This cannot be
 
-          undone.
+          undone.
 
-        </p>
+        </p>
 
-      </div>
+      </div>
 
 
 
-      <div className="bg-white rounded-2xl p-4 border border-slate-100 space-y-3">
+      <div className="bg-white rounded-2xl p-4 border border-slate-100 space-y-3">
 
-        <div>
+        <div>
 
-          <label className="text-xs font-semibold text-slate-500 mb-1.5 block">
+          <label className="text-xs font-semibold text-slate-500 mb-1.5 block">
 
-            Delete completed
+            Delete completed
 
-            records before
+            records before
 
-          </label>
+          </label>
 
 
 
-          <input
+          <input
 
-            type="date"
+            type="date"
 
-            value={cutoff}
+            value={cutoff}
 
-            onChange={(event) =>
+            onChange={(event) =>
 
-              setCutoff(
+              setCutoff(
 
-                event.target.value
+                event.target.value
 
-              )
+              )
 
-            }
+            }
 
-            className="input"
+            className="input"
 
-          />
+          />
 
-        </div>
+        </div>
 
 
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2">
 
-          {buttons.map((button) => (
+          {buttons.map((button) => (
 
-            <button
+            <button
 
-              key={
+              key={
 
-                button.entity
+                button.entity
 
-              }
+              }
 
-              disabled={
+              disabled={
 
-                busy || !cutoff
+                busy || !cutoff
 
-              }
+              }
 
-              onClick={() =>
+              onClick={() =>
 
-                run(
+                run(
 
-                  button.entity,
+                  button.entity,
 
-                  button.query,
+                  button.query,
 
-                  button.label
+                  button.label
 
-                )
+                )
 
-              }
+              }
 
-              className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-semibold border border-red-200 bg-red-50 text-red-700 disabled:opacity-50"
+              className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-semibold border border-red-200 bg-red-50 text-red-700 disabled:opacity-50"
 
-            >
+            >
 
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" />
 
 
 
-              Delete{" "}
+              Delete{" "}
 
-              {button.label}
+              {button.label}
 
-            </button>
+            </button>
 
-          ))}
+          ))}
 
-        </div>
+        </div>
 
-      </div>
+      </div>
 
-    </div>
+    </div>
 
-  );
+  );
 
 }
