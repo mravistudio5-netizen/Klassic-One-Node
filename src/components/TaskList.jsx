@@ -128,12 +128,23 @@ export default function TaskList({ scope = "all" }) {
     const status = normalizeStatus(task?.status);
 
     if (filter === "active") {
-      if (COMPLETED_STATUSES.includes(task.status)) return false;
-      if (task.start_date && new Date(task.start_date) > new Date()) {
-        return false;
-      }
-      return true;
-    }
+  if (COMPLETED_STATUSES.includes(task.status)) return false;
+
+  if (task.start_date && new Date(task.start_date) > new Date()) {
+    return false;
+  }
+
+  if (!task.due_date) return false;
+
+  const dueDate = new Date(task.due_date);
+  const now = new Date();
+
+  return (
+    dueDate.getFullYear() === now.getFullYear() &&
+    dueDate.getMonth() === now.getMonth() &&
+    dueDate.getDate() === now.getDate()
+  );
+}
 
     if (filter === "all") return true;
     if (filter === "pending") return status === "pending";
