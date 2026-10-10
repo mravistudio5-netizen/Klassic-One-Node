@@ -10,8 +10,6 @@ import { Trash2, AlertTriangle } from "lucide-react";
 
 import { toast } from "sonner";
 
-import SheetExport from "@/components/reports/SheetExport";
-
 
 
 export default function Reports() {
@@ -202,7 +200,7 @@ export default function Reports() {
 
       "tasks",
 
-      t("taskReport"),
+      "Task Report",
 
     ]);
 
@@ -230,7 +228,7 @@ export default function Reports() {
 
       "tailor",
 
-      t("tailorReport"),
+      "Tailor Report",
 
     ]);
 
@@ -244,7 +242,7 @@ export default function Reports() {
 
       "checklists",
 
-      t("checklistReport"),
+      "Checklist Report",
 
     ]);
 
@@ -263,54 +261,7 @@ export default function Reports() {
     ]);
 
   }
-
-
-
-  if (can("reports", "export")) {
-
-    tabs.push([
-
-      "sheet",
-
-      "Sheet Export",
-
-    ]);
-
-  }
-
-
-
-
-
-  if (isReviewer) {
-
-    tabs.push([
-
-      "scorecard",
-
-      "Scorecard",
-
-    ]);
-
-  }
-
-
-
-  if (can("reports", "export")) {
-
-    tabs.push([
-
-      "sheet",
-
-      "Sheet Export",
-
-    ]);
-
-  }
-
-
-
-  if (isAdmin) {
+if (isAdmin) {
 
     tabs.push([
 
@@ -407,20 +358,7 @@ export default function Reports() {
           <Scorecard users={users} />
 
         )}
-
-
-
-      {tab === "sheet" &&
-
-        can("reports", "export") && (
-
-          <SheetExport />
-
-        )}
-
-
-
-      {tab === "data" &&
+{tab === "data" &&
 
         isAdmin && (
 
