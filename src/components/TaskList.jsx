@@ -109,8 +109,21 @@ export default function TaskList({ scope = "all" }) {
           user?.id || user?._id || ""
         );
 
+        const todayTasks = loadedTasks.filter((task) => {
+          if (!task?.due_date) return false;
+
+          const dueDate = new Date(task.due_date);
+          const now = new Date();
+
+          return (
+            dueDate.getFullYear() === now.getFullYear() &&
+            dueDate.getMonth() === now.getMonth() &&
+            dueDate.getDate() === now.getDate()
+          );
+        });
+
         setTasks(
-          loadedTasks.filter((task) => {
+          todayTasks.filter((task) => {
             const assignedUserId = String(
               task?.assigned_to_id ||
                 task?.assignedToId ||
