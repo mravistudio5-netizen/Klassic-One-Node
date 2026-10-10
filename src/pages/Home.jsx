@@ -102,11 +102,11 @@ const isToday = (value) => {
 
   return (
 
-    date.getFullYear() === now\.getFullYear() &&
+    date.getFullYear() === now.getFullYear() &&
 
-    date.getMonth() === now\.getMonth() &&
+    date.getMonth() === now.getMonth() &&
 
-    date.getDate() === now\.getDate()
+    date.getDate() === now.getDate()
 
   );
 
@@ -269,23 +269,23 @@ export default function Home() {
 
   return (
 
-    \<div className="p-4 space-y-4">
+    <div className="p-4 space-y-4">
 
 
 
       {/\* Welcome \*/}
 
-      \<div>
+      <div>
 
-        \<p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500">
 
           {t("welcome")}
 
-        \</p>
+        </p>
 
 
 
-        \<h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="text-2xl font-bold text-slate-900">
 
           {user?.full_name ||
 
@@ -293,9 +293,9 @@ export default function Home() {
 
             "Staff"}
 
-        \</h2>
+        </h2>
 
-      \</div>
+      </div>
 
 
 
@@ -303,11 +303,11 @@ export default function Home() {
 
       {!isTailorRole && (
 
-        \<div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3">
 
 
 
-          \<StatCard
+          <StatCard
 
             icon={CheckSquare}
 
@@ -329,7 +329,7 @@ export default function Home() {
 
 
 
-          \<StatCard
+          <StatCard
 
             icon={Clock}
 
@@ -351,7 +351,7 @@ export default function Home() {
 
 
 
-          \<StatCard
+          <StatCard
 
             icon={AlertTriangle}
 
@@ -373,7 +373,7 @@ export default function Home() {
 
 
 
-          \<StatCard
+          <StatCard
 
             icon={CheckCircle2}
 
@@ -395,7 +395,7 @@ export default function Home() {
 
 
 
-        \</div>
+        </div>
 
       )}
 
@@ -405,11 +405,11 @@ export default function Home() {
 
       {isTailorRole && (
 
-        \<div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3">
 
 
 
-          \<StatCard
+          <StatCard
 
             icon={Scissors}
 
@@ -431,7 +431,7 @@ export default function Home() {
 
 
 
-          \<StatCard
+          <StatCard
 
             icon={Scissors}
 
@@ -453,33 +453,33 @@ export default function Home() {
 
 
 
-        \</div>
+        </div>
 
       )}
 
 
 
-      {/\* Quick Actions — OWNER / ADMIN ONLY \*/}
+      {/* Quick Actions — OWNER / ADMIN ONLY */}
 
       {isAdminRole && !isTailorRole && (
 
-        \<div className="space-y-3 pt-1">
+        <div className="space-y-3 pt-1">
 
 
 
-          \<h3 className="text-sm font-semibold text-slate-700">
+          <h3 className="text-sm font-semibold text-slate-700">
 
             Quick Actions
 
-          \</h3>
+          </h3>
 
 
 
-          \<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 
 
 
-            \<QuickActionCard
+            <QuickActionCard
 
               to="/my-tasks"
 
@@ -491,7 +491,7 @@ export default function Home() {
 
 
 
-            \<QuickActionCard
+            <QuickActionCard
 
               to="/tasks"
 
@@ -503,7 +503,7 @@ export default function Home() {
 
 
 
-            \<QuickActionCard
+            <QuickActionCard
 
               to="/reports"
 
@@ -515,7 +515,7 @@ export default function Home() {
 
 
 
-            \<QuickActionCard
+            <QuickActionCard
 
               to="/sheets"
 
@@ -527,7 +527,7 @@ export default function Home() {
 
 
 
-            \<QuickActionCard
+            <QuickActionCard
 
               to="/task-admin"
 
@@ -537,7 +537,7 @@ export default function Home() {
 
             />
 
-\<QuickActionCard
+<QuickActionCard
 
   to="/checklist-admin"
 
@@ -547,15 +547,15 @@ export default function Home() {
 
 />
 
-          \</div>
+          </div>
 
-        \</div>
+        </div>
 
       )}
 
 
 
-    \</div>
+    </div>
 
   );
 
@@ -575,7 +575,7 @@ function QuickActionCard({
 
   return (
 
-    \<Link
+    <Link
 
       to={to}
 
@@ -583,21 +583,21 @@ function QuickActionCard({
 
     >
 
-      \<div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-slate-100 flex items-center justify-center mb-2 transition-colors">
+      <div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-slate-100 flex items-center justify-center mb-2 transition-colors">
 
-        \<Icon className="w-5 h-5" />
+        <Icon className="w-5 h-5" />
 
-      \</div>
+      </div>
 
 
 
-      \<p className="text-xs font-medium text-slate-700">
+      <p className="text-xs font-medium text-slate-700">
 
         {label}
 
-      \</p>
+      </p>
 
-    \</Link>
+    </Link>
 
   );
 
@@ -619,39 +619,39 @@ function StatCard({
 
   return (
 
-    \<div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+    <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
 
 
 
-      \<div
+      <div
 
-        className={\`w-9 h-9 rounded-xl flex items-center justify-center ${color} mb-2\`}
+        className={`w-9 h-9 rounded-xl flex items-center justify-center ${color} mb-2`}
 
       >
 
-        \<Icon className="w-5 h-5" />
+        <Icon className="w-5 h-5" />
 
-      \</div>
+      </div>
 
 
 
-      \<p className="text-2xl font-bold text-slate-900">
+      <p className="text-2xl font-bold text-slate-900">
 
         {value}
 
-      \</p>
+      </p>
 
 
 
-      \<p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-500">
 
         {label}
 
-      \</p>
+      </p>
 
 
 
-    \</div>
+    </div>
 
   );
 
