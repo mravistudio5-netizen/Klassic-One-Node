@@ -10,6 +10,8 @@ import { Trash2, AlertTriangle } from "lucide-react";
 
 import { toast } from "sonner";
 
+import SheetExport from "@/components/reports/SheetExport";
+
 
 
 export default function Reports() {
@@ -261,7 +263,26 @@ export default function Reports() {
     ]);
 
   }
-if (isReviewer) {
+
+
+
+  if (can("reports", "export")) {
+
+    tabs.push([
+
+      "sheet",
+
+      "Sheet Export",
+
+    ]);
+
+  }
+
+
+
+
+
+  if (isReviewer) {
 
     tabs.push([
 
@@ -272,7 +293,24 @@ if (isReviewer) {
     ]);
 
   }
-if (isAdmin) {
+
+
+
+  if (can("reports", "export")) {
+
+    tabs.push([
+
+      "sheet",
+
+      "Sheet Export",
+
+    ]);
+
+  }
+
+
+
+  if (isAdmin) {
 
     tabs.push([
 
@@ -369,7 +407,20 @@ if (isAdmin) {
           <Scorecard users={users} />
 
         )}
-{tab === "data" &&
+
+
+
+      {tab === "sheet" &&
+
+        can("reports", "export") && (
+
+          <SheetExport />
+
+        )}
+
+
+
+      {tab === "data" &&
 
         isAdmin && (
 
